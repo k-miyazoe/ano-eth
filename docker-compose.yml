@@ -1,0 +1,54 @@
+version: "3"
+
+services:
+  frontend:
+    tty: true
+    #stdin_open: true
+    build:
+      context: .
+      dockerfile: ./Docker/Dockerfile.front
+    image: vcea-front
+    container_name: vcea-front
+    ports:
+      - 8080:8080
+    volumes:
+      - ./front:/app/
+    env_file:
+      - ./env_files/front.env
+
+  backend:
+    tty: true
+    #stdin_open: true
+    build:
+      context: .
+      dockerfile: ./Docker/Dockerfile.back
+    image: vcea-back
+    container_name: vcea-back
+    ports:
+      - 9990:9990
+    volumes:
+      - ./back:/run/
+    depends_on:
+      mysql:
+        condition: service_healthy
+    env_file:
+      - ./env_files/back.env
+
+  mysql:
+    build:
+      context: .
+      dockerfile: ./Docker/Dockerfile.db
+    image: vcea-db
+    container_name: vcea-db
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 1s
+      retries: 10
+      start_period: 3s
+      timeout: 20s
+    volumes:
+      - ./mysql/db:/var/lib/mysql #初期データをマウントする場所
+    ports:
+      - 9991:9991
+    env_file:
+      - ./env_files/db.env
