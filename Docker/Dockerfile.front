@@ -6,4 +6,4 @@ RUN npm install -g @vue/cli
 
 EXPOSE 8080
 
-#CMD [ "sh", "entrypoint-front.sh" ]
+CMD [ "sh", "entrypoint-front.sh" ]

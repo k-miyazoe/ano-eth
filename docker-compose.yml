@@ -3,7 +3,7 @@ version: "3"
 services:
   frontend:
     tty: true
-    #stdin_open: true
+    stdin_open: true
     build:
       context: .
       dockerfile: ./Docker/Dockerfile.front
@@ -18,7 +18,7 @@ services:
 
   backend:
     tty: true
-    #stdin_open: true
+    stdin_open: true
     build:
       context: .
       dockerfile: ./Docker/Dockerfile.back
@@ -49,6 +49,6 @@ services:
     volumes:
       - ./mysql/db:/var/lib/mysql #初期データをマウントする場所
     ports:
-      - 9991:9991
+      - 3306:3306
     env_file:
       - ./env_files/db.env
