@@ -3,7 +3,7 @@ VCEA
 
 # Features
 
-仮想通貨 
+仮想通貨で匿名評価と悪質な投稿防止する質問掲示板
 
 # Installation
 ```bash
