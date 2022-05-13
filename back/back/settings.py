@@ -5,20 +5,16 @@ import environ
 
 env = environ.Env()
 env.read_env('back.env')
-#DB_PASS = env('DB_PASS')
 pymysql.install_as_MySQLdb()
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-#SECURITY WARNING: keep the secret key used in production secret! env('Django_SECRET_KEY')
-#SECRET_KEY = '@k4p^*hui-^=zi(p-jv3a8p3i4cob6-yzlwa#$21xc8%2w#o%l'
+#SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('Django_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG')
-#DEBUG = True
 
-#ALLOWED_HOSTS = []
 ALLOW_HOSTS = env.list('ALLOW_HOSTS')
 
 
@@ -32,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
     'app',
 ]
@@ -39,12 +36,36 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware', #追加
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        #全てのリクエストに対して認証が必要なクラス
+        'rest_framework.permissions.IsAuthenticated',
+        #getのみ認証なしでも可能
+        #'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
+        #'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+JWT_AUTH = {
+    'JWT_VERIFY': True,
+    'JWT_VERIFY_EXPIRATION': True, #Falseならトークンの期限永続化
+    'JWT_LEEWAY': 0,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=86400), #JWTトークンの有効期限を設定
+    'JWT_ALLOW_REFRESH': True,  #JWTトークを更新(Refresh)できるようにするかを決める
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7), #七日以内に更新されないとログアウト
+}
 
 CROS_ORIGIN_ALLOW_ALL = env.bool('CROS_ORIGIN_ALLOW_ALL')
 CORS_ORIGIN_WHITELIST = [
@@ -82,15 +103,7 @@ WSGI_APPLICATION = 'back.wsgi.application'
 DATABASES = {
     'default': env.db(),
 }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-
+AUTH_USER_MODEL = 'app.User'
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -113,9 +126,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ja'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tokyo'
 
 USE_I18N = True
 
