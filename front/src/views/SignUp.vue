@@ -4,7 +4,7 @@
       <v-flex xs12 sm8 lg4 md5>
         <v-card class="mt-12">
           <v-card-title>
-            <span class="headline">Signup</span>
+            <span class="headline">サインアップ</span>
           </v-card-title>
 
           <v-spacer />
@@ -36,7 +36,16 @@
                   :rules="rules.password"
                   maxlength="20"
                   required
-                  v-on:keydown.enter="login"
+                />
+                <!--確認用passoword-->
+                <v-text-field
+                  type="password"
+                  v-model="check_password"
+                  :counter="20"
+                  label="パスワード(確認用)"
+                  :rules="rules.password"
+                  maxlength="20"
+                  required
                 />
                 <v-text-field
                   v-model="credentials.username"
@@ -56,76 +65,109 @@
                   ></v-checkbox>
                 </v-row>
               </v-container>
-              <v-btn class="pink white--text" :disabled="!valid" @click="login">
-                Signup
+              <v-btn class="pink white--text" :disabled="!valid" @click="signUp">
+                サインアップ
               </v-btn>
             </v-form>
           </v-card-text>
         </v-card>
+        <v-btn @click="test_log">log test</v-btn>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import axios from "axios";
 import Swal from "sweetalert2";
 import router from "../router";
+import header from "/src/node/axios";
+
 export default {
-  name: "Auth",
   data: () => ({
     credentials: {},
+    axios: {},
     valid: true,
     loading: false,
+    check_password:"",
     rules: {
       email: [
         (v) => !!v || "メールアドレスは必須です",
-        (v) =>
-          (v && v.length > 4) || "ユーザー名は5文字以上でなければなりません",
       ],
       password: [
         (v) => !!v || "パスワードは必須です",
         (v) =>
-          (v && v.length > 4) || "パスワードは5文字以上でなければなりません",
+          (v && v.length > 7) || "パスワードは8文字以上でなければなりません",
       ],
     },
-    //defaultは履修生
-    status: false,
+    //履修生(false) 先生,TA(true)
+    status: null,
   }),
   mounted() {
     //this.checkToken();
+    this.axiosHeader()
   },
   methods: {
-    login() {
-      //   if (this.$refs.form.validate()) {
-      //     this.loading = true;
-      //     axios
-      //       .post(process.env.VUE_APP_API_URL + "/auth/", this.credentials)
-      //       .then((res) => {
-      //         this.$session.start();
-      //         this.$session.set("token", res.data.token);
-      //         console.log(res);
-      //         router.push("/question");
-      //       })
-      //       .catch((e) => {
-      //         this.loading = false;
-      //         console.log(e);
-      //         Swal.fire({
-      //           icon: "warning",
-      //           title: "Error",
-      //           text: "ユーザー名もしくはパスワード、または両方が間違っています",
-      //           showConfirmButton: false,
-      //           showCloseButton: false,
-      //           timer: 3000,
-      //         });
-      //       });
-      //   }
+    signUp() {
+        if (this.$refs.form.validate()) {
+          this.loading = true;
+          console.log(this.credentials)
+          //パスワードの確認
+          if(this.checkPassword(this.credentials.password,this.check_password)){
+            this.axios
+            .post("http://localhost:9990/app/create-user/", this.credentials)
+            .then((res) => {
+              console.log(res);
+              //signinへページ遷移しない
+              router.push("/");
+            })
+            .catch((e) => {
+              this.loading = false;
+              console.log(e);
+              Swal.fire({
+                icon: "warning",
+                title: "Error",
+                text: "入力が正しくありません",
+                showConfirmButton: false,
+                showCloseButton: false,
+                timer: 3000,
+              });
+            });
+          }
+          else{
+             Swal.fire({
+                icon: "warning",
+                title: "Error",
+                text: "パスワードが一致しません",
+                showConfirmButton: false,
+                showCloseButton: false,
+                timer: 1000,
+              });
+              this.loading = false;
+              this.credentials.password = "",
+              this.check_password = ""
+          }
+        }
     },
     checkToken() {
-      //   this.$session.start();
-      //   if (this.$session.has("token")) {
-      //     router.push("/question");
-      //   }
+        this.$session.start();
+        if (this.$session.has("token")) {
+          router.push("/");
+        }
+    },
+    checkPassword(pass1,pass2){
+      if(pass1==pass2){
+        return true
+      } else{
+        return false
+      }
+    },
+    axiosHeader(){
+      this.axios = header.setHeader();
+    },
+    test_log(){
+      //console.log(process.env.API_URL)
+      //console.log(this.checkPassword(this.credentials.password,this.check_password))
+      router.push("/");
     },
   },
 };

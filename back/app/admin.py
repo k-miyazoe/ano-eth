@@ -41,6 +41,7 @@ class UserAdminCustom(UserAdmin):
         'username',
         'email',
         'password',
+        'status',
         'is_active',
         'is_staff',
         'is_superuser'

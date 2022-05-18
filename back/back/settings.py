@@ -47,7 +47,9 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         #全てのリクエストに対して認証が必要なクラス
-        'rest_framework.permissions.IsAuthenticated',
+        #'rest_framework.permissions.IsAuthenticated',
+        #無制限のアクセスを許可
+        'rest_framework.permissions.AllowAny',
         #getのみ認証なしでも可能
         #'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],

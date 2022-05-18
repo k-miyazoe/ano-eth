@@ -37,10 +37,10 @@
                   :rules="rules.password"
                   maxlength="20"
                   required
-                  v-on:keydown.enter="login"
+                  v-on:keydown.enter="signIn"
                 />
               </v-container>
-              <v-btn class="pink white--text" :disabled="!valid" @click="login">
+              <v-btn class="pink white--text" :disabled="!valid" @click="signIn">
                 サインイン
               </v-btn>
             </v-form>
@@ -56,7 +56,6 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import router from "../router";
 export default {
-  name: "Auth",
   data: () => ({
     credentials: {},
     valid: true,
@@ -76,7 +75,7 @@ export default {
     this.checkToken();
   },
   methods: {
-    login() {
+    signIn() {
         if (this.$refs.form.validate()) {
           this.loading = true;
           axios
@@ -104,7 +103,7 @@ export default {
     checkToken() {
         this.$session.start();
         if (this.$session.has("token")) {
-          router.push("/ß");
+          router.push("/");
         }
     },
   },
