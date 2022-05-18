@@ -32,10 +32,10 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField("メールアドレス", max_length=255, unique=True)
     username = models.CharField("名前", max_length=255)
-    status = models.BooleanField(default=False)
+    status = models.BooleanField(help_text='学生ならfalse')
     #not null制約解除
     eth_stock = models.IntegerField(null=True)
-
+    
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
