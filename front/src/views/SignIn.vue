@@ -4,7 +4,7 @@
       <v-flex xs12 sm8 lg4 md5>
         <v-card class="mt-12">
           <v-card-title>
-            <span class="headline">Signin</span>
+            <span class="headline">サインイン</span>
           </v-card-title>
 
           <v-spacer />
@@ -23,9 +23,9 @@
             <v-form v-else ref="form" v-model="valid" lazy-validation>
               <v-container>
                 <v-text-field
-                  v-model="credentials.mailadress"
+                  v-model="credentials.email"
                   label="学籍番号メールアドレス"
-                  :rules="rules.mailadress"
+                  :rules="rules.email"
                   required
                 />
 
@@ -41,7 +41,7 @@
                 />
               </v-container>
               <v-btn class="pink white--text" :disabled="!valid" @click="login">
-                Signin
+                サインイン
               </v-btn>
             </v-form>
           </v-card-text>
@@ -62,52 +62,50 @@ export default {
     valid: true,
     loading: false,
     rules: {
-      mailadress: [
+      email: [
         (v) => !!v || "メールアドレスは必須です",
-        (v) =>
-          (v && v.length > 4) || "ユーザー名は5文字以上でなければなりません",
       ],
       password: [
         (v) => !!v || "パスワードは必須です",
         (v) =>
-          (v && v.length > 4) || "パスワードは5文字以上でなければなりません",
+          (v && v.length > 7) || "パスワードは8文字以上でなければなりません",
       ],
     },
   }),
   mounted() {
-    //this.checkToken();
+    this.checkToken();
   },
   methods: {
     login() {
-      //   if (this.$refs.form.validate()) {
-      //     this.loading = true;
-      //     axios
-      //       .post(process.env.VUE_APP_API_URL + "/auth/", this.credentials)
-      //       .then((res) => {
-      //         this.$session.start();
-      //         this.$session.set("token", res.data.token);
-      //         console.log(res);
-      //         router.push("/question");
-      //       })
-      //       .catch((e) => {
-      //         this.loading = false;
-      //         console.log(e);
-      //         Swal.fire({
-      //           icon: "warning",
-      //           title: "Error",
-      //           text: "ユーザー名もしくはパスワード、または両方が間違っています",
-      //           showConfirmButton: false,
-      //           showCloseButton: false,
-      //           timer: 3000,
-      //         });
-      //       });
-      //   }
+        if (this.$refs.form.validate()) {
+          this.loading = true;
+          axios
+            .post("http://localhost:9990/auth/", this.credentials)
+            .then((res) => {
+              this.$session.start();
+              this.$session.set("token", res.data.token);
+              console.log(res);
+              router.push("/");
+            })
+            .catch((e) => {
+              this.loading = false;
+              console.log(e);
+              Swal.fire({
+                icon: "warning",
+                title: "Error",
+                text: "メールアドレスもしくはパスワード、または両方が間違っています",
+                showConfirmButton: false,
+                showCloseButton: false,
+                timer: 3000,
+              });
+            });
+        }
     },
     checkToken() {
-      //   this.$session.start();
-      //   if (this.$session.has("token")) {
-      //     router.push("/question");
-      //   }
+        this.$session.start();
+        if (this.$session.has("token")) {
+          router.push("/ß");
+        }
     },
   },
 };
