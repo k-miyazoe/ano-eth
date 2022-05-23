@@ -79,7 +79,7 @@ export default {
         if (this.$refs.form.validate()) {
           this.loading = true;
           axios
-            .post("http://localhost:9990/auth/", this.credentials)
+            .post(process.env.VUE_APP_API_URL + "/auth/", this.credentials)
             .then((res) => {
               this.$session.start();
               this.$session.set("token", res.data.token);

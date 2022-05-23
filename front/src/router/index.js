@@ -4,6 +4,8 @@ import HomeView from '../views/HomeView.vue'
 import SignUp from '../views/SignUp.vue'
 import SignIn from '../views/SignIn.vue'
 
+import Question from '../components/Question.vue'
+
 
 Vue.use(VueRouter)
 
@@ -28,6 +30,10 @@ const routes = [
   {
     path: '/signin',
     component: SignIn
+  },
+  {
+    path: '/question',
+    component: Question
   },
 
 ]
