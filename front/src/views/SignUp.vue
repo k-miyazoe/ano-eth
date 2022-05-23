@@ -50,6 +50,7 @@
                 <v-text-field
                   v-model="credentials.username"
                   label="名前"
+                  :rules="rules.username"
                   required
                 />
                 <v-row>
@@ -57,11 +58,13 @@
                     v-model="credentials.status"
                     label="履修生"
                     value="false"
+                    :rules="rules.status"
                   ></v-checkbox>
                   <v-checkbox
                     v-model="credentials.status"
                     label="その他"
                     value="true"
+                    :rules="rules.status"
                   ></v-checkbox>
                 </v-row>
               </v-container>
@@ -98,6 +101,12 @@ export default {
         (v) =>
           (v && v.length > 7) || "パスワードは8文字以上でなければなりません",
       ],
+      username: [
+        (v) => !!v || "名前は必須です",
+      ],
+      status: [
+        (v) => !!v || "選択は必須です",
+      ]
     },
     //履修生(false) 先生,TA(true)
     status: null,
@@ -114,10 +123,9 @@ export default {
           //パスワードの確認
           if(this.checkPassword(this.credentials.password,this.check_password)){
             this.axios
-            .post("http://localhost:9990/app/create-user/", this.credentials)
+            .post(process.env.VUE_APP_API_URL + "/app/create-user/", this.credentials)
             .then((res) => {
               console.log(res);
-              //signinへページ遷移しない
               router.push("/");
             })
             .catch((e) => {
@@ -165,9 +173,9 @@ export default {
       this.axios = header.setHeader();
     },
     test_log(){
-      //console.log(process.env.API_URL)
+      console.log(process.env.VUE_APP_API_URL + "/app/create-user/")
       //console.log(this.checkPassword(this.credentials.password,this.check_password))
-      router.push("/");
+      //router.push("/");
     },
   },
 };
