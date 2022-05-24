@@ -74,7 +74,6 @@
             </v-form>
           </v-card-text>
         </v-card>
-        <v-btn @click="test_log">log test</v-btn>
       </v-flex>
     </v-layout>
   </v-container>

@@ -46,6 +46,10 @@
             </v-form>
           </v-card-text>
         </v-card>
+        <router-link to='/signup'>
+          アカウントを登録していない方はこちらから
+        </router-link>
+        </v-btn>
       </v-flex>
     </v-layout>
   </v-container>
