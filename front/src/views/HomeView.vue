@@ -1,81 +1,53 @@
 <template>
   <v-app>
-    <v-main class="grey lighten-2">
-        <v-row class="col-md-6 offset-md-3">
-          <v-col class="mt-4" align="start">
-            <v-toolbar color="#78909C" dark flat class="rounded-t-xl">
-              <template v-slot:extension>
-                <v-tabs v-model="tab" align-with-title @change="check_tab()">
-                  <v-tabs-slider color="yellow"></v-tabs-slider>
-                  <v-tab v-for="item in items" :key="item">
-                    <v-badge
-                      v-if="question_list[item]['is_new']"
-                      color="red"
-                      :content="question_list[item]['is_new']"
-                    >
-                      {{ item }}
-                    </v-badge>
-                    <div v-else>
-                      {{ item }}
-                    </div>
-                  </v-tab>
-                </v-tabs>
-              </template>
-            </v-toolbar>
-            <v-tabs-items v-model="tab" @change="check_tab()">
-              <v-tab-item v-for="item in items" :key="item">
-                <v-expansion-panels
-                  v-for="question in question_list[item]['value']"
-                  :key="question"
-                  focusable
-                >
-                  <v-expansion-panel>
-                    <v-expansion-panel-header>
-                      {{ question }}
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                      <p></p>
-                      {{ question }}
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-                </v-expansion-panels>
+    <Header />
+    <div class="row justify-content-center">
+      <!--質問タブ-->
+      <v-card class="mx-auto" max-height="344">
+        <v-col class="mb-10">
+          <router-link to='/question'>
+            <v-btn color="primary">質問する</v-btn>
+          </router-link>
+          <v-tabs v-model="tab">
+            <v-tab v-for="item in items" :key="item.tab">
+              {{ item.tab }}
+            </v-tab>
+          </v-tabs>
+          <!--質問-->
+          <v-tabs-items v-model="tab">
+            <v-tabs-items v-model="tab">
+              <v-tab-item v-for="item in items" :key="item.tab">
+                <v-card v-for="question in item.testcontent" :key="question.content">
+                  <v-card-text>{{ question.title }} {{ question.content }}</v-card-text>
+                </v-card>
               </v-tab-item>
             </v-tabs-items>
-          </v-col>
-        </v-row>
-    </v-main>
+          </v-tabs-items>
+        </v-col>
+      </v-card>
+    </div>
   </v-app>
 </template>
-<script>
-import router from '../router';
-export default ({
-  data: () => ({
-    items: ["未解決", "解決済み", "自分の質問"],
-    tab: null,
-    //ここはDBから持ってきたほうがいい
-    question_list: {
-      未解決: { is_new: 0, value: ["0_hello", "0_hoge"] },
-      解決済み: { is_new: 2, value: ["1_hello", "1_hoge"] },
-      自分の質問: { is_new: 4, value: ["2_hello", "2_hoge"] },
-    },
-  }),
-  mounted(){
-    this.checkLoggedIn();
-  },
-  methods: {
-    // 確認したタブのバッジを削除する
-    check_tab() {
-      this.question_list[this.items[this.tab]]["is_new"] = 0;
-      // TODO : DBに見たことを記すデータを反映させる
-    },
-    checkLoggedIn(){
-      this.$session.start()
-      if(!this.$session.has('token')){
-        router.push('/signin')
-      }
-    },
-  }
-  
-})
-</script>
 
+<script>
+import Header from "../components/Header.vue";
+export default {
+  components: {
+    Header,
+  },
+  data() {
+    return {
+      tab: null,
+      //contentをそれぞれ取得して、保存するようにする(mount())
+      //title timestamp answer数
+      items: [
+        // { tab: '未解決', content: 'Please Help me' },
+        { tab: '未解決', testcontent: [{ id: 1, title: 'title1', content: '2022-05-25', }, { id: 2, title: 'title2', content: '2022-05-24' }, { id: 3, title: 'title3', content: '2022-05-13' }], },
+        { tab: '解決済み', testcontent: [{ id: 4, title: 'title1', content: 'a' }, { id: 5, title: 'title2', content: 'b' }, { id: 6, title: 'title3', content: 'c' }], },
+        { tab: '評価の高い質問', testcontent: [{ id: 7, title: 'title1', content: 'あ' }, { id: 8, title: 'title2', content: 'い' }, { id: 9, title: 'title3', content: 'う' }], },
+        { tab: '自分の質問', testcontent: [{ id: 10, title: 'title1', content: '1' }, { id: 11, title: 'title2', content: '2' }], },
+      ],
+    }
+  },
+}
+</script>

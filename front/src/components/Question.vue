@@ -1,35 +1,57 @@
 <template>
-  <v-card>
-    <v-tabs v-model="tab">
-      <v-tab v-for="item in items" :key="item.tab">
-        {{ item.tab }}
-      </v-tab>
-    </v-tabs>
+  <v-app>
+    <Header />
+    <v-container>
+      <v-card class="mt-12">
+        <v-card-title>
+          <span class="headline">質問フォーム</span>
+        </v-card-title>
 
-    <v-tabs-items v-model="tab">
-      <v-tab-item v-for="item in items" :key="item.tab">
-        <v-card flat>
-          <!--v-forで質問を表示する クリックしたら閲覧できるようにする-->
-          <v-card-text>{{ item.content }}</v-card-text>
-        </v-card>
-      </v-tab-item>
-    </v-tabs-items>
-  </v-card>
+        <v-layout row fill-height justify-center align-center v-if="loading">
+          <v-progress-circular :size="50" color="primary" indeterminate />
+        </v-layout>
+
+        <!-- 質門投稿フォーム -->
+        <v-form v-else ref="form" v-model="valid" lazy-validation>
+          <!--title-->
+          <v-textarea background-color="grey" color="black" label="質問タイトル" clearable clear-icon="mdi-close-circle"
+            rows="1" outlined>
+          </v-textarea>
+          <!--content-->
+          <v-textarea background-color="grey lighten-2" color="orange orange-darken-4" label="質問内容" clearable
+            clear-icon="mdi-close-circle" auto-grow outlined>
+          </v-textarea>
+          <!--sorce code-->
+          <v-textarea background-color="blue" color="cyan" label="ソースコード" clearable clear-icon="mdi-close-circle"
+            auto-grow outlined>
+          </v-textarea>
+          <v-btn variant="outline-primary" :disabled="!valid">質問する</v-btn>
+        </v-form>
+      </v-card>
+    </v-container>
+  </v-app>
 </template>
-
 <script>
+import { VueLoading } from 'vue-loading-template'
+import Header from "../components/Header.vue";
+
 export default {
+  components: {
+    VueLoading,
+    Header
+  },
   data() {
     return {
-      tab: null,
-      currentItem: "未解決",
-      items: [
-        { tab: '未解決', content: 'Please Help me' },
-        { tab: '解決済み', content: 'Finish' },
-        { tab: '評価の高い質問', content: 'Best Question' },
-        { tab: '自分の質問', content: '質問はありません' },
-      ],
-    }
+      title: '',
+      contents: '',
+      already_perfect: false,
+      miner: '0x4c4941fb0a0f300b615a9d5e9fb215d2db35c7ec',
+      host: 'https://eagle4.fu.is.saga-u.ac.jp/geth-docker/',
+      loading: false,
+      valid: true,
+    };
   },
+  methods: {
+  }
 }
 </script>
