@@ -1,3 +1,4 @@
+from pyexpat import model
 from django.db import models
 
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
@@ -51,3 +52,32 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+class Ether(models.Model):
+    user_id      = models.ForeignKey(User, on_delete=models.CASCADE)
+    ether_address = models.CharField(max_length=100)
+    ether_wallet   = models.IntegerField(default=0)
+    ether_anonymous = models.BooleanField()
+    ether_password = models.CharField(max_length=20)
+    ether_account_name = models.CharField(max_length=30)
+
+class Question(models.Model):
+    ether_id = models.ForeignKey(Ether, on_delete=models.CASCADE)
+    question_title = models.CharField(max_length=50)
+    question_content = models.TextField()
+    question_source_code = models.TextField(null=True)
+    question_post_time = models.DateTimeField(auto_now_add=True)
+    question_status = models.BooleanField(default=False)
+    question_value = models.IntegerField(default=0)
+    question_number_of_responses = models.IntegerField(default=0)
+
+class Answer(models.Model):
+    eth_id = models.ForeignKey(Ether, on_delete=models.CASCADE)
+    question_id = models.ForeignKey(Question,on_delete=models.CASCADE)
+    answer_content = models.TextField()
+    answer_source_code = models.TextField()
+    answer_post_time = models.DateTimeField(auto_now_add=True)
+    answer_value = models.IntegerField(default=0)
+    answer_best = models.BooleanField()
+   
+    
