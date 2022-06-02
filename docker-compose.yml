@@ -31,8 +31,6 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-    env_file:
-      - ./env_files/back.env
 
   mysql:
     build:

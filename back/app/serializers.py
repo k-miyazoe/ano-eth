@@ -17,9 +17,9 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 class EtherSerializer(serializers.ModelSerializer):
-    class Meat:
+    class Meta:
         model = Ether
-        field = ('id','user_id','ether_address','ether_password','ether_wallet','ether_anonymous','ether_account_name')
+        field = ('id','user_id','ether_address','ether_password',
+        'ether_wallet','ether_anonymous','ether_account_name')
         read_only_fields = ('id',)
-    #def create_ether_address(self):
         
