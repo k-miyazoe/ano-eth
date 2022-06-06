@@ -7,8 +7,8 @@ services:
     build:
       context: .
       dockerfile: ./Docker/Dockerfile.front
-    image: vcea-front
-    container_name: vcea-front
+    image: ano-eth-front
+    container_name: ano-eth-front
     ports:
       - 8080:8080
     volumes:
@@ -22,8 +22,8 @@ services:
     build:
       context: .
       dockerfile: ./Docker/Dockerfile.back
-    image: vcea-back
-    container_name: vcea-back
+    image: ano-eth-back
+    container_name: ano-eth-back
     ports:
       - 9990:9990
     volumes:
@@ -36,8 +36,8 @@ services:
     build:
       context: .
       dockerfile: ./Docker/Dockerfile.db
-    image: vcea-db
-    container_name: vcea-db
+    image: ano-eth-db
+    container_name: ano-eth-db
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 1s
