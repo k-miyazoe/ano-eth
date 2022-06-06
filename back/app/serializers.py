@@ -1,7 +1,6 @@
-#from django.contrib.auth import get_user_model
 from dataclasses import field
 from rest_framework import serializers
-from .models import User,Ether
+from .models import User,Ether,Question,Answer
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,7 +18,17 @@ class UserSerializer(serializers.ModelSerializer):
 class EtherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ether
-        field = ('id','user_id','ether_address','ether_password',
-        'ether_wallet','ether_anonymous','ether_account_name')
+        fields = '__all__' 
         read_only_fields = ('id',)
-        
+    
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = '__all__'
+        read_only_fields = ('id',)
+
+class AnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = '__all__'
+        read_only_fields = ('id',)
