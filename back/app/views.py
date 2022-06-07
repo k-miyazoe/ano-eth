@@ -103,12 +103,17 @@ class QuestionUpdate(generics.UpdateAPIView):
     
 #Answer
 #一つの質問に対する複数の回答を取得するクラスを作成する
+#投稿時間が新しい順に変更したい
 #特定の回答を取得する
-# class Answer(generics.ListAPIView):
-#     #投稿時間が新しい順に変更したい
-#     queryset = Question.objects.all()
-#     serializer_class = QuestionSerializer
-    
+#lookup_field no
+#ListAPIView -> RetrieveAPIView 1つしか返せない
+#MultipleFieldLookupMixin
+#引数をもらって，実行する(シリアライザーを使用しない)
+class AnswerGet(generics.ListAPIView):
+    #queryset = Answer.objects.all()
+    queryset = Answer.objects.filter(question_id=0)
+    serializer_class = AnswerSerializer
+    lookup_field = 'question_id'   
     
 class AnswerCreate(generics.CreateAPIView):
     queryset = Answer.objects.all()
