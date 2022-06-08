@@ -1,3 +1,4 @@
+from http.client import HTTPResponse
 from rest_framework import generics, permissions
 from .models import User,Ether,Question,Answer
 from .serializers import UserSerializer,EtherSerializer,QuestionSerializer,AnswerSerializer
@@ -5,6 +6,7 @@ from web3 import Web3
 import environ,json
 from django.http import JsonResponse, HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
 
 env = environ.Env()
 env.read_env('back.env')
@@ -102,18 +104,13 @@ class QuestionUpdate(generics.UpdateAPIView):
     serializer_class = QuestionSerializer
     
 #Answer
-#一つの質問に対する複数の回答を取得するクラスを作成する
-#投稿時間が新しい順に変更したい
-#特定の回答を取得する
-#lookup_field no
-#ListAPIView -> RetrieveAPIView 1つしか返せない
-#MultipleFieldLookupMixin
-#引数をもらって，実行する(シリアライザーを使用しない)
+#特定の質問に対する回答をすべて取得
 class AnswerGet(generics.ListAPIView):
-    #queryset = Answer.objects.all()
-    queryset = Answer.objects.filter(question_id=0)
     serializer_class = AnswerSerializer
-    lookup_field = 'question_id'   
+    
+    def get_queryset(self):
+        q_id = self.kwargs.get("question_id")
+        return Answer.objects.filter(question_id=q_id)
     
 class AnswerCreate(generics.CreateAPIView):
     queryset = Answer.objects.all()
