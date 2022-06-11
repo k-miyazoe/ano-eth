@@ -3,8 +3,8 @@ import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import SignUp from '../views/SignUp.vue'
 import SignIn from '../views/SignIn.vue'
-
 import Question from '../components/Question.vue'
+import QuestionView from '../components/QuestionView.vue'
 
 
 Vue.use(VueRouter)
@@ -35,6 +35,12 @@ const routes = [
     path: '/question',
     component: Question
   },
+  //動的に質問閲覧ページを表示する必要がある
+  {
+    path: '/question/:id',
+    component: QuestionView
+  },
+
 
 ]
 

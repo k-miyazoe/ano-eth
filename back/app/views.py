@@ -1,4 +1,3 @@
-from http.client import HTTPResponse
 from rest_framework import generics, permissions
 from .models import User,Ether,Question,Answer
 from .serializers import UserSerializer,EtherSerializer,QuestionSerializer,AnswerSerializer
@@ -6,7 +5,7 @@ from web3 import Web3
 import environ,json
 from django.http import JsonResponse, HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
-from django.core import serializers
+
 
 env = environ.Env()
 env.read_env('back.env')
@@ -91,18 +90,48 @@ class EtherCreate(generics.CreateAPIView):
 #Question
 class QuestionList(generics.ListAPIView):
     #投稿時間が新しい順に変更したい
-    queryset = Question.objects.all().order_by('id')
+    queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+    
+    def get_queryset(self):
+        flag = self.kwargs.get("flag")
+        if flag == "unresolved":
+            return Question.objects.filter(question_status=False)
+        elif flag == "resolved":
+            return Question.objects.filter(question_status=True)
+        #未完成
+        elif flag == "my-question":
+            return Question.objects.filter()
+        else:
+            return Question.objects.all()
 
 class QuestionCreate(generics.CreateAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
-#updateを使ってみた
-class QuestionUpdate(generics.UpdateAPIView):
+#1つの質問を取得 + 更新
+class QuestionGet(generics.RetrieveUpdateAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
     
+#解決や評価に使用
+class QuestionUpdate(generics.UpdateAPIView):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+
+#自身の質問のみ編集可能 使用するか未定
+class QuestionUpdateOnlyCreater(generics.UpdateAPIView):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+
+#質問検索機能
+class QuestionSearch(generics.ListAPIView):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    def get_queryset(self):
+        keyword = self.kwargs.get("question_content")
+        return Question.objects.filter(question_content__icontains=keyword)
+ 
 #Answer
 #特定の質問に対する回答をすべて取得
 class AnswerGet(generics.ListAPIView):
@@ -116,7 +145,6 @@ class AnswerCreate(generics.CreateAPIView):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
 
-#updateを使ってみた
 class AnswerUpdate(generics.UpdateAPIView):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer

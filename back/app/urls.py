@@ -15,10 +15,11 @@ urlpatterns = [
     path('ether-list/', EtherList.as_view()),
     path('create-ether/', EtherCreate.as_view()),
     #Question
-    path('question-list/', QuestionList.as_view()),
+    path('get-question/<slug:flag>/', QuestionList.as_view()),
+    path('get-question/<pk>', QuestionGet.as_view()),
     path('create-question/', QuestionCreate.as_view()),
-    #question put
-    #path('create-question/', QuestionCreate.as_view()),
+    # path('update-question/<pk>/', QuestionUpdate.as_view()),
+    # path('search-question/<slug:flag>', QuestionSearch.as_view()),
     #Answer
     path('get-answer/<int:question_id>/', AnswerGet.as_view()),
     path('create-answer/', AnswerCreate.as_view()),
