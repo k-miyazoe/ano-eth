@@ -32,19 +32,22 @@ const routes = [
     component: SignIn
   },
   {
-    path: '/question',
+    path: '/create-question',
     component: Question
   },
   //動的に質問閲覧ページを表示する必要がある
   {
     path: '/question/:id',
-    component: QuestionView
+    component: QuestionView,
+    props: true,
+    name: "question-detail"
   },
 
 
 ]
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
 

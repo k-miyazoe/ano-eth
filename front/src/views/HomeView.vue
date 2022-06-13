@@ -1,26 +1,32 @@
 <template>
   <v-app>
     <Header />
-    <div class="row justify-content-center">
-      <v-card class="mx-auto" max-height="344">
-        <v-col class="mb-10">
-          <v-card v-for="item in unresolved_question" :key="item.id">
-            <v-card-text>{{ item.question_title }} {{ item.question_post_time }}</v-card-text>
-          </v-card>
-        </v-col>
-      </v-card>
-    </div>
+    <v-main>
+      <NavHelpBar />
+      <v-container fluid>
+        <v-card v-for="item in unresolved_question" :key="item.id">
+          <v-card-text>
+            <router-link :to="{ name: 'question-detail', params: { id: item.id } }">
+              {{ item.question_title }} {{ item.question_post_time }}
+            </router-link>
+            <!-- <router-link :to="{ name: 'content-url', params: {id: Number(id) + 1 } }">リンク名</router-link> -->
+
+          </v-card-text>
+        </v-card>
+      </v-container>
+    </v-main>
   </v-app>
 </template>
 
 <script>
 import Header from "../components/Header.vue";
+import NavHelpBar from "../components/NavigationHelpBar.vue"
 import axios from "axios";
 //import changeTimestamp from "../node/changeTimestamp";
 
 export default {
   components: {
-    Header,
+    Header, NavHelpBar,
   },
   data() {
     return {
