@@ -66,6 +66,8 @@ JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=86400), #JWTトークンの有効期限を設定
     'JWT_ALLOW_REFRESH': True,  #JWTトークを更新(Refresh)できるようにするかを決める
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7), #七日以内に更新されないとログアウト
+    #token認証の際にtoken以外を取得するためのカスタム
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'back.jwt_utils.jwt_response_payload_handler',  # JWT_RESPONSE_PAYLOAD_HANDLERに自作のjwt_response_payload_handlerを指定する
 }
 
 CROS_ORIGIN_ALLOW_ALL = env.bool('CROS_ORIGIN_ALLOW_ALL')

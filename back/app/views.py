@@ -5,6 +5,8 @@ from web3 import Web3
 import environ,json
 from django.http import JsonResponse, HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
+#tokenからuser objectを取得する
+from rest_framework.authtoken.models import Token
 
 
 env = environ.Env()
@@ -26,7 +28,7 @@ class UserCreate(generics.CreateAPIView):
 class UserRetrieveUpdate(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated, )
+    #permission_classes = (permissions.IsAuthenticated, )
 
 #イーサリアムアドレス作成処理[未完成]
 ############################################################################
@@ -86,6 +88,10 @@ class EtherCreate(generics.CreateAPIView):
     queryset = Ether.objects.all()
     serializer_class = EtherSerializer
     
+class EtherRetrieveUpdate(generics.RetrieveUpdateAPIView):
+    queryset = Ether.objects.all()
+    serializer_class = EtherSerializer
+    #permission_classes = (permissions.IsAuthenticated, )
 
 #Question
 class QuestionList(generics.ListAPIView):
