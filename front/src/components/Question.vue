@@ -1,57 +1,177 @@
 <template>
   <v-app>
     <Header />
-    <v-container>
-      <v-card class="mt-12">
-        <v-card-title>
-          <span class="headline">質問フォーム</span>
-        </v-card-title>
+    <v-main>
+      <NavHelpBar />
+      <v-container>
+        <v-card class="mt-12">
+          <v-card-title>
+            <span class="headline">質問フォーム</span>
+          </v-card-title>
 
-        <v-layout row fill-height justify-center align-center v-if="loading">
-          <v-progress-circular :size="50" color="primary" indeterminate />
-        </v-layout>
+          <v-layout row fill-height justify-center align-center v-if="loading">
+            <v-progress-circular :size="50" color="primary" indeterminate />
+          </v-layout>
 
-        <!-- 質門投稿フォーム -->
-        <v-form v-else ref="form" v-model="valid" lazy-validation>
-          <!--title-->
-          <v-textarea background-color="grey" color="black" label="質問タイトル" clearable clear-icon="mdi-close-circle"
-            rows="1" outlined>
-          </v-textarea>
-          <!--content-->
-          <v-textarea background-color="grey lighten-2" color="orange orange-darken-4" label="質問内容" clearable
-            clear-icon="mdi-close-circle" auto-grow outlined>
-          </v-textarea>
-          <!--sorce code-->
-          <v-textarea background-color="blue" color="cyan" label="ソースコード" clearable clear-icon="mdi-close-circle"
-            auto-grow outlined>
-          </v-textarea>
-          <v-btn variant="outline-primary" :disabled="!valid">質問する</v-btn>
-        </v-form>
-      </v-card>
-    </v-container>
+          <!-- 質門投稿フォーム -->
+          <v-form v-else ref="form" v-model="valid" lazy-validation>
+            <!--title-->
+            <v-textarea v-model="credentials.question_title" label="質問タイトル" :rules="rules.question_title" required
+              clearable clear-icon="mdi-close-circle" rows="1" outlined>
+            </v-textarea>
+            <!--content-->
+            <v-textarea v-model="credentials.question_content" label="質問内容" :rules="rules.question_content" required
+              clearable clear-icon="mdi-close-circle" auto-grow outlined>
+            </v-textarea>
+            <!--sorce code-->
+            <v-textarea v-model="credentials.question_source_code" label="ソースコード" clearable
+              clear-icon="mdi-close-circle" auto-grow outlined>
+            </v-textarea>
+            <v-dialog v-model="dialog" width="500">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn dark v-bind="attrs" v-on="on" :disabled="!valid">
+                  質問する
+                </v-btn>
+              </template>
+
+              <v-card>
+                <v-card-title>
+                  質問について
+                </v-card-title>
+                <v-card-text>
+                  質問は削除できません．あとから編集することは可能です．
+                  閲覧者が理解できる質問になっていますか？
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="primary" @click="postQuestion">
+                    質問を送信する
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-form>
+        </v-card>
+      </v-container>
+    </v-main>
   </v-app>
 </template>
 <script>
 import { VueLoading } from 'vue-loading-template'
 import Header from "../components/Header.vue";
+import NavHelpBar from "../components/NavigationHelpBar.vue"
+import Swal from "sweetalert2";
+import header from "/src/node/axios";
+import router from "../router";
 
 export default {
   components: {
     VueLoading,
-    Header
+    Header,
+    NavHelpBar,
   },
   data() {
     return {
-      title: '',
-      contents: '',
-      already_perfect: false,
-      miner: '0x4c4941fb0a0f300b615a9d5e9fb215d2db35c7ec',
-      host: 'https://eagle4.fu.is.saga-u.ac.jp/geth-docker/',
       loading: false,
       valid: true,
+      credentials: {},
+      rules: {
+        question_title: [
+          (v) => !!v || "質問タイトルは必須です",
+        ],
+        question_content: [
+          (v) => !!v || "質問内容は必須です",
+        ],
+      },
+      axios: {},
+      dialog: false,
+      userId: this.$session.get('user_id'),
+      userObject: {},
+      etherId: null,
     };
   },
+  mounted() {
+    this.checkToken();
+    this.axiosHeader()
+    this.getEtherId();
+    this.getUserInfo();
+  },
   methods: {
+    checkToken() {
+      this.$session.start();
+      //tokenを所持しているなら
+      if (this.$session.has("token")) {
+        console.log('user_id', this.$session.get('user_id'))
+      }
+      //所持していないなら
+      else {
+        router.push("/signin");
+      }
+    },
+    axiosHeader() {
+      this.axios = header.setHeader();
+    },
+    postQuestion() {
+      this.loading = true
+      this.credentials["ether_id"] = this.etherId
+      this.axios
+        .post(process.env.VUE_APP_API_URL + "/app/create-question/", this.credentials)
+        .then((res) => {
+          console.log(res);
+          this.loading = false
+        })
+        .catch((e) => {
+          this.loading = false;
+          console.log(e);
+          Swal.fire({
+            icon: "warning",
+            title: "Error",
+            text: "入力が正しくありません",
+            showConfirmButton: false,
+            showCloseButton: false,
+            timer: 3000,
+          });
+        });
+      this.dialog = false
+    },
+    sendEther() {
+      this.loading = true
+      send_object = this.userObject
+      send_object.ether_stock = send_object.ether_stock + 1;
+      console.log(ether_point)
+      this.axios.put(process.env.VUE_APP_API_URL + "/app/users/" + this.userId, send_object)
+        .then((res) => {
+          console.log(res);
+          this.loading = false
+        })
+        .catch((e) => {
+          this.loading = false;
+          console.log(e);
+        });
+    },
+    getUserInfo() {
+      this.axios
+        .get(process.env.VUE_APP_API_URL + "/app/users/" + this.userId)
+        .then((res) => {
+          this.userObject = res.data
+          console.log(res.data)
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    getEtherId() {
+      this.axios
+        .get(process.env.VUE_APP_API_URL + "/app/ether/" + this.userId)
+        .then((res) => {
+          console.log("EtherId", res.data.id);
+          this.etherId = res.data.id
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
   }
 }
 </script>

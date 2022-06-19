@@ -74,7 +74,6 @@ class Question(models.Model):
     question_number_of_responses = models.IntegerField(default=0)
 
 class Answer(models.Model):
-    #eth_idになってたからether_idに変更した バグ起きるかも
     ether_id = models.ForeignKey(Ether, on_delete=models.CASCADE)
     question_id = models.ForeignKey(Question,on_delete=models.CASCADE)
     answer_content = models.TextField()
@@ -82,6 +81,6 @@ class Answer(models.Model):
     #作成日は自動で保存 フロント側でデータいらない
     answer_post_time = models.DateTimeField(auto_now_add=True)
     answer_value = models.IntegerField(default=0)
-    answer_best = models.BooleanField()
+    answer_best = models.BooleanField(default=False)
    
     

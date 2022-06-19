@@ -74,6 +74,7 @@ export default {
           .then((res) => {
             this.$session.start();
             this.$session.set("token", res.data.token);
+            this.$session.set('user_id', res.data.user_id);
             console.log(res);
             router.push("/");
           })
@@ -97,6 +98,16 @@ export default {
         router.push("/");
       }
     },
+    //mailアドレスからuseridを取得する
+    getUserId() {
+      axios.post(process.env.VUE_APP_API_URL + "/app/user/")
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((e) => {
+          console.log(e)
+        })
+    }
   },
 };
 </script>
