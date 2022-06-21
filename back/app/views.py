@@ -77,9 +77,13 @@ def postCreateEther(request):
 ##############################################################################
 
 #Etherモデル確認
-class EtherList(generics.ListAPIView):
+class EtherGet(generics.ListAPIView):
     queryset = Ether.objects.all().order_by('id')
     serializer_class = EtherSerializer
+    
+    def get_queryset(self):
+        u_id = self.kwargs.get("user_id")
+        return Ether.objects.filter(user_id=u_id)
     # #管理者のみユーザーリスト確認可能
     # permission_classes = (permissions.IsAdminUser,)
 

@@ -43,6 +43,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import router from "../router";
 import Header from "../components/Header.vue";
+import header from "/src/node/axios";
+
 export default {
   components: {
     Header,
@@ -61,11 +63,17 @@ export default {
           (v && v.length > 7) || "パスワードは8文字以上でなければなりません",
       ],
     },
+    axios: {},
+    user_id: null,
+    user_name: null,
   }),
   mounted() {
     this.checkToken();
   },
   methods: {
+    axiosHeader() {
+      this.axios = header.setHeader();
+    },
     signIn() {
       if (this.$refs.form.validate()) {
         this.loading = true;
@@ -74,9 +82,12 @@ export default {
           .then((res) => {
             this.$session.start();
             this.$session.set("token", res.data.token);
-            this.$session.set('user_id', res.data.user_id);
+            this.$session.set("user_id", res.data.user_id);
+            this.user_id = res.data.user_id
+            this.user_name = res.data.user_name
             console.log(res);
-            router.push("/");
+            this.getEtherModel();
+            //router.push("/");
           })
           .catch((e) => {
             this.loading = false;
@@ -98,16 +109,57 @@ export default {
         router.push("/");
       }
     },
-    //mailアドレスからuseridを取得する
-    getUserId() {
-      axios.post(process.env.VUE_APP_API_URL + "/app/user/")
+    //user_idからetherアカウントを取得
+    getEtherModel() {
+      axios.get(process.env.VUE_APP_API_URL + "/app/ether-get/" + this.user_id)
+        .then((res) => {
+          this.ether_id = red.data.id
+          console.log(res);
+          router.push('/')
+        })
+        .catch((e) => {
+          console.log(e)
+          this.createEtherUser()
+        })
+    },
+    //signIn関数が先に処理されていることが前提
+    createEtherUser() {
+      ether_obj = {
+        user_id: this.user_id,
+        ether_address: "xxx",
+        ether_password: this.credentials.password,
+        ether_wallet: 0,
+        ether_anonymous: false,
+        ether_account_name: this.user_name,//usernameを取得する
+      }
+      console.log("ether object", ether_obj)
+      this.axios
+        .post(process.env.VUE_APP_API_URL + "/app/create-ether/", ether_obj)
         .then((res) => {
           console.log(res);
         })
         .catch((e) => {
-          console.log(e)
+          console.log(e);
+        });
+
+    },
+    createUserGroup() {
+      //新しくmodelを生成する必要がある
+      group_obj = {
+        ether_id: 1,
+        username: this.credentials.username,
+        user_group: "A B C",
+      }
+      this.axios
+        .post(process.env.VUE_APP_API_URL + "/app/create-ether/", group_obj)
+        .then((res) => {
+          console.log(res);
         })
-    }
+        .catch((e) => {
+          console.log(e);
+        });
+
+    },
   },
 };
 </script>
