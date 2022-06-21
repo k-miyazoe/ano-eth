@@ -97,7 +97,7 @@ export default {
             .post(process.env.VUE_APP_API_URL + "/app/create-user/", this.credentials)
             .then((res) => {
               console.log(res);
-              router.push("/");
+              //router.push("/");
             })
             .catch((e) => {
               this.loading = false;

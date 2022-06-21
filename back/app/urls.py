@@ -13,10 +13,8 @@ urlpatterns = [
     #WEB3
     path('create-eth-address/', views.createEtherAddress),
     #Ether
-    path('ether-list/', EtherList.as_view()),
+    path('ether-get/<int:user_id>', EtherGet.as_view()),
     path('create-ether/', EtherCreate.as_view()),
-    #へんこうする予定 Listで良さそう　パラメーターはuser id
-    #ひとりで最低二つのアカウントを所持する予定だから
     path('ether/<pk>/', EtherRetrieveUpdate.as_view()),
     
     #Question

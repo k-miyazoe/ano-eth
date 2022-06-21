@@ -206,7 +206,7 @@ export default {
         },
         getEtherId() {
             axios
-                .get(process.env.VUE_APP_API_URL + "/app/ether/" + this.userId)
+                .get(process.env.VUE_APP_API_URL + "/app/ether-get/" + this.userId)
                 .then((res) => {
                     console.log("EtherId", res.data.id);
                     this.etherId = res.data.id
