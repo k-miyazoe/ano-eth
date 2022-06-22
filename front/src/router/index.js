@@ -5,6 +5,7 @@ import SignUp from '../views/SignUp.vue'
 import SignIn from '../views/SignIn.vue'
 import Question from '../components/Question.vue'
 import QuestionView from '../components/QuestionView.vue'
+import CreateEther from '../views/CreateEther.vue'
 
 
 Vue.use(VueRouter)
@@ -14,14 +15,6 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView
-  },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
     path: '/signup',
@@ -42,6 +35,10 @@ const routes = [
     props: true,
     name: "question-detail"
   },
+  {
+    path: '/create-ether',
+    component: CreateEther,
+  }
 
 
 ]

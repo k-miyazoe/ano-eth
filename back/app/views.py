@@ -5,8 +5,6 @@ from web3 import Web3
 import environ,json
 from django.http import JsonResponse, HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
-#tokenからuser objectを取得する
-from rest_framework.authtoken.models import Token
 
 
 env = environ.Env()
@@ -19,7 +17,7 @@ class UserList(generics.ListAPIView):
     queryset = User.objects.all().order_by('id')
     serializer_class = UserSerializer
     #管理者のみユーザーリスト確認可能
-    permission_classes = (permissions.IsAdminUser,)
+    #permission_classes = (permissions.IsAdminUser,)
 
 class UserCreate(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -78,14 +76,11 @@ def postCreateEther(request):
 
 #Etherモデル確認
 class EtherGet(generics.ListAPIView):
-    queryset = Ether.objects.all().order_by('id')
     serializer_class = EtherSerializer
     
     def get_queryset(self):
         u_id = self.kwargs.get("user_id")
         return Ether.objects.filter(user_id=u_id)
-    # #管理者のみユーザーリスト確認可能
-    # permission_classes = (permissions.IsAdminUser,)
 
 #Etherモデル生成
 class EtherCreate(generics.CreateAPIView):

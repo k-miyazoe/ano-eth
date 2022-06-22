@@ -13,7 +13,7 @@ urlpatterns = [
     #WEB3
     path('create-eth-address/', views.createEtherAddress),
     #Ether
-    path('ether-get/<int:user_id>', EtherGet.as_view()),
+    path('ether-get/<int:user_id>/', EtherGet.as_view()),
     path('create-ether/', EtherCreate.as_view()),
     path('ether/<pk>/', EtherRetrieveUpdate.as_view()),
     
@@ -28,4 +28,5 @@ urlpatterns = [
     path('get-answer/<int:question_id>/', AnswerGet.as_view()),
     path('create-answer/', AnswerCreate.as_view()),
     path('update-answer/<pk>/', AnswerUpdate.as_view()),
+    
 ]
