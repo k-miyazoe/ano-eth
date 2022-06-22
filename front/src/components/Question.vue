@@ -120,6 +120,11 @@ export default {
         .then((res) => {
           console.log(res);
           this.loading = false
+          Swal.fire(
+            'Goo job!',
+            'success',
+          )
+          router.push('/')
         })
         .catch((e) => {
           this.loading = false;
@@ -165,8 +170,9 @@ export default {
       this.axios
         .get(process.env.VUE_APP_API_URL + "/app/ether-get/" + this.userId)
         .then((res) => {
-          console.log("EtherId", res.data.id);
-          this.etherId = res.data.id
+          let response = res.data[0]
+          this.etherId = response["id"]
+          console.log("EtherId", response["id"]);
         })
         .catch((e) => {
           console.log(e);

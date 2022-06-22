@@ -32,3 +32,4 @@ class AnswerSerializer(serializers.ModelSerializer):
         model = Answer
         fields = '__all__'
         read_only_fields = ('id',)
+

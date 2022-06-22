@@ -41,7 +41,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-
+    #追加
+    user_group = models.CharField("グループ",max_length=10,null=True)
+    
     objects = UserManager()
 
     #USERNAME_FIELDで指定したフィールドは、ログイン認証やメール送信などで利用します。
@@ -57,6 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Ether(models.Model):
     user_id      = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_name    = models.CharField(null=True,max_length=255)
     ether_address = models.CharField(max_length=100)
     ether_password = models.CharField(max_length=20)
     ether_wallet   = models.IntegerField(default=0)

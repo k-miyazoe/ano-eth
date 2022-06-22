@@ -31,6 +31,11 @@
                     <v-checkbox v-model="credentials.status" label="その他" value="true" :rules="rules.status">
                     </v-checkbox>
                   </v-row>
+                  <!--追加 group-->
+                  <v-row>
+                    <v-select v-model="credentials.user_group" :items="items" label="グループを選択" outlined :rules="rules.user_group">
+                    </v-select>
+                  </v-row>
                 </v-container>
                 <v-btn class="pink white--text" :disabled="!valid" @click="signUp">
                   サインアップ
@@ -77,14 +82,18 @@ export default {
       ],
       status: [
         (v) => !!v || "選択は必須です",
-      ]
+      ],
+      user_group: [
+        (v) => !!v || "選択は必須です",
+      ],
     },
-    //履修生(false) 先生,TA(true)
-    status: null,
+    userId: null,
+    status: null, //履修生(false) 先生,TA(true)
+    items: ['A[実名]', 'B[匿名]', 'C[完全匿名]'],
   }),
   mounted() {
-    //this.checkToken();
-    this.axiosHeader()
+    this.checkToken();
+    this.axiosHeader();
   },
   methods: {
     signUp() {
@@ -97,7 +106,7 @@ export default {
             .post(process.env.VUE_APP_API_URL + "/app/create-user/", this.credentials)
             .then((res) => {
               console.log(res);
-              //router.push("/");
+              router.push("/signin");
             })
             .catch((e) => {
               this.loading = false;

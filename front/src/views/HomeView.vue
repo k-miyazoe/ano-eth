@@ -23,7 +23,6 @@
 import Header from "../components/Header.vue";
 import NavHelpBar from "../components/NavigationHelpBar.vue"
 import axios from "axios";
-//import changeTimestamp from "../node/changeTimestamp";
 
 export default {
   components: {
@@ -49,8 +48,6 @@ export default {
         .get(process.env.VUE_APP_API_URL + "/app/get-question/unresolved/")
         .then((res) => {
           console.log(res.data);
-          //let timestamp = changeTimestamp(res.data)
-          //console.log(timestamp)
           this.unresolved_question = res.data
         })
         .catch((e) => {

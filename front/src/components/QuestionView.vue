@@ -205,11 +205,13 @@ export default {
                 });
         },
         getEtherId() {
+            console.log(process.env.VUE_APP_API_URL + "/app/ether-get/" + this.userId + "/")
             axios
                 .get(process.env.VUE_APP_API_URL + "/app/ether-get/" + this.userId)
                 .then((res) => {
-                    console.log("EtherId", res.data.id);
-                    this.etherId = res.data.id
+                    let data = res.data[0]
+                    console.log("EtherId", data["id"]);
+                    this.etherId = data["id"]
                 })
                 .catch((e) => {
                     console.log(e);

@@ -17,11 +17,6 @@ export default {
                 disabled: false,
                 href: '/',
             },
-            {
-                text: '質問',
-                disabled: false,
-                href: '/question/1/',
-            },
         ],
     }),
 }
