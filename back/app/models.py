@@ -42,7 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     #追加
-    user_group = models.CharField("グループ",max_length=10,null=True)
+    user_group = models.CharField("グループ",max_length=10)
     
     objects = UserManager()
 
@@ -60,8 +60,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Ether(models.Model):
     user_id      = models.ForeignKey(User, on_delete=models.CASCADE)
     user_name    = models.CharField(null=True,max_length=255)
-    ether_address = models.CharField(max_length=100)
-    ether_password = models.CharField(max_length=20)
+    ether_address = models.CharField(default="address",max_length=100)
+    ether_password = models.CharField(default="password",max_length=20)
     ether_wallet   = models.IntegerField(default=0)
     ether_anonymous = models.BooleanField()
     ether_account_name = models.CharField(max_length=30)

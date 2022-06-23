@@ -31,9 +31,10 @@
                     <v-checkbox v-model="credentials.status" label="その他" value="true" :rules="rules.status">
                     </v-checkbox>
                   </v-row>
-                  <!--追加 group-->
+                  <!--追加 group これだと追加できてない-->
                   <v-row>
-                    <v-select v-model="credentials.user_group" :items="items" label="グループを選択" outlined :rules="rules.user_group">
+                    <v-select v-model="credentials.user_group" :items="items" label="グループを選択" outlined
+                      :rules="rules.user_group">
                     </v-select>
                   </v-row>
                 </v-container>
@@ -89,7 +90,8 @@ export default {
     },
     userId: null,
     status: null, //履修生(false) 先生,TA(true)
-    items: ['A[実名]', 'B[匿名]', 'C[完全匿名]'],
+    //A 実名 B 匿名 C 完全匿名
+    items: ['A', 'B', 'C'],
   }),
   mounted() {
     this.checkToken();
@@ -125,14 +127,14 @@ export default {
           Swal.fire({
             icon: "warning",
             title: "Error",
-            text: "パスワードが一致しません",
+            text: "パスワードが一致しません.もう一度入力してください",
             showConfirmButton: false,
             showCloseButton: false,
             timer: 1000,
           });
           this.loading = false;
-          this.credentials.password = "",
-            this.check_password = ""
+          this.credentials.password = ""
+          this.check_password = ""
         }
       }
     },
@@ -153,9 +155,6 @@ export default {
       this.axios = header.setHeader();
     },
     test_log() {
-      console.log(process.env.VUE_APP_API_URL + "/app/create-user/")
-      //console.log(this.checkPassword(this.credentials.password,this.check_password))
-      //router.push("/");
     },
   },
 };

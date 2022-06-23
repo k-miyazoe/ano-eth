@@ -78,8 +78,8 @@ export default {
             this.$session.start();
             this.$session.set("token", res.data.token);
             this.$session.set("user_id", res.data.user_id);
+            this.$session.set("user_name", res.data.user_name);
             this.user_id = res.data.user_id
-            console.log(res);
             this.loading = false;
             this.getEtherModel();
           })
@@ -94,6 +94,7 @@ export default {
               showCloseButton: false,
               timer: 3000,
             });
+            this.credentials.password = ""
           });
       }
     },
@@ -103,19 +104,17 @@ export default {
         router.push("/");
       }
     },
-    //etherがあるならhomeへ ないならcreate-ether
-    //ここをテストしたい
+    //etherアカウントの所持確認
     getEtherModel() {
+      console.log('getEtherModel[signin.vue] start')
       axios
-        .get(process.env.VUE_APP_API_URL + "/app/ether-get/" + this.userId)
+        .get(process.env.VUE_APP_API_URL + "/app/ether-get/" + this.user_id)
         .then((res) => {
-          if(res.data[0] != []){
-             let response = res.data[0]
-             this.etherId = response["id"]
-             console.log("EtherId", response["id"]);
-             router.push('/')
-          } else {
+          console.log('res.data', res.data)
+          if (res.data[0] == null) {
             router.push('/create-ether')
+          } else {
+            router.push('/')
           }
         })
         .catch((e) => {

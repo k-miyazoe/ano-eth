@@ -9,6 +9,7 @@ urlpatterns = [
     path('users/', UserList.as_view()),
     path('create-user/',UserCreate.as_view()),
     path('users/<pk>/', UserRetrieveUpdate.as_view()),
+    path('user-delete/<pk>/', UserDelete.as_view()),
     
     #WEB3
     path('create-eth-address/', views.createEtherAddress),
