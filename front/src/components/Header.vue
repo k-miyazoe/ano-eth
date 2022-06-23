@@ -2,7 +2,7 @@
   <div>
     <v-app-bar color="#00B0FF" dense dark elevation="10">
       <v-toolbar-title>
-        ANO-ETH
+        プログラミング概論・質問掲示板
       </v-toolbar-title>
       <v-spacer />
       <v-btn>
@@ -13,16 +13,6 @@
       <v-btn>
         <router-link to='/signin'>
           サインイン
-        </router-link>
-      </v-btn>
-      <v-btn icon>
-        <router-link to='/'>
-          <v-icon>mdi-trophy-variant-outline</v-icon>
-        </router-link>
-      </v-btn>
-      <v-btn icon>
-        <router-link to='/question'>
-          <v-icon>mdi-lightbulb-question-outline</v-icon>
         </router-link>
       </v-btn>
     </v-app-bar>

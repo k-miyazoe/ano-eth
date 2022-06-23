@@ -5,7 +5,8 @@ from .models import User,Ether,Question,Answer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'password',)
+        #fields = ('id', 'email', 'username', 'password','user_group')
+        fields = '__all__' 
         #idを更新不可にできる
         read_only_fields = ('id',)
         extra_kwargs = {'password': {'required': True}}

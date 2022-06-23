@@ -27,6 +27,11 @@ class UserRetrieveUpdate(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     #permission_classes = (permissions.IsAuthenticated, )
+    
+class UserDelete(generics.DestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    
 
 #イーサリアムアドレス作成処理[未完成]
 ############################################################################
