@@ -3,10 +3,11 @@ import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import SignUp from '../views/SignUp.vue'
 import SignIn from '../views/SignIn.vue'
+import MyPage from '../views/MyPage.vue'
 import Question from '../components/Question.vue'
 import QuestionView from '../components/QuestionView.vue'
 import CreateEther from '../views/CreateEther.vue'
-import MyPage from '../views/Mypage.vue'
+//import MyPage from '../views/Mypage.vue'
 
 
 Vue.use(VueRouter)
@@ -41,13 +42,11 @@ const routes = [
     component: CreateEther,
   },
   {
-    path: '/mypage/:id',
+    path: '/mypage',
     component: MyPage,
     props: true,
     name: "mypage"
-  }
-
-
+  },
 ]
 
 const router = new VueRouter({

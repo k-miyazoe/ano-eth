@@ -64,6 +64,7 @@ import NavHelpBar from "../components/NavigationHelpBar.vue"
 import Swal from "sweetalert2";
 import header from "/src/node/axios";
 import router from "../router";
+import axios from "axios";
 
 export default {
   components: {
@@ -93,18 +94,16 @@ export default {
   },
   mounted() {
     this.checkToken();
-    this.axiosHeader()
+    this.axiosHeader();
     this.getEtherId();
     this.getUserInfo();
   },
   methods: {
     checkToken() {
       this.$session.start();
-      //tokenを所持しているなら
       if (this.$session.has("token")) {
-        console.log('user_id', this.$session.get('user_id'))
+        console.log('Question.vue start user_id', this.$session.get('user_id'))
       }
-      //所持していないなら
       else {
         router.push("/signin");
       }
@@ -112,6 +111,7 @@ export default {
     axiosHeader() {
       this.axios = header.setHeader();
     },
+    //point追加機能を作成する
     postQuestion() {
       this.loading = true
       this.credentials["ether_id"] = this.etherId
@@ -120,6 +120,8 @@ export default {
         .then((res) => {
           console.log(res);
           this.loading = false
+          //pointの追加
+          this.putSendPoint()
           Swal.fire(
             'Goo job!',
             'success',
@@ -140,6 +142,33 @@ export default {
         });
       this.dialog = false
     },
+    //現在obj空です
+    createPutObject(){
+       let obj ={
+        "email":this.userObject.email,
+        "password":this.userObject.password,
+        "username":this.userObject.username,
+        "status":this.userObject.status,
+        "user_group":this.userObject.user_group,
+        //所持ポイント増加
+        "eth_stock":this.userObject.eth_stock + 1
+      }
+      console.log('Question.vue createPutObject() objの確認',obj)
+      return obj
+    },
+    //質問したユーザーに対して，ポイントを送る
+    putSendPoint(){
+      let update_obj = this.createPutObject()
+      console.log('Question.vue putSendPoint() obj', update_obj)
+      this.axios
+        .put(process.env.VUE_APP_API_URL + "/app/users/" + this.userId + "/", update_obj)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     sendEther() {
       this.loading = true
       send_object = this.userObject
@@ -156,11 +185,12 @@ export default {
         });
     },
     getUserInfo() {
-      this.axios
+      axios
         .get(process.env.VUE_APP_API_URL + "/app/users/" + this.userId)
         .then((res) => {
           this.userObject = res.data
-          console.log(res.data)
+          console.log("Question.vue getUserInfo() userObject",res.data)
+          this.createPutObject();
         })
         .catch((e) => {
           console.log(e);
@@ -172,7 +202,7 @@ export default {
         .then((res) => {
           let response = res.data[0]
           this.etherId = response["id"]
-          console.log("EtherId", response["id"]);
+          console.log("QUestion.vue getEtherId() etherId", response["id"]);
         })
         .catch((e) => {
           console.log(e);

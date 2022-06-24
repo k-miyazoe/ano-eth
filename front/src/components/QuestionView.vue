@@ -108,6 +108,7 @@ export default {
     },
     mounted() {
         this.checkToken()
+        this.getUserInfo()
         this.getEtherId()
         this.axiosHeader()
         //質問内容とと質問idを取得
@@ -158,8 +159,9 @@ export default {
                     console.log(res);
                     this.loading = false
                     this.credentials = {}
+                    //point追加
+                    this.putSendPoint()
                     this.getAnyAnswer()
-
                 })
                 .catch((e) => {
                     this.loading = false;
@@ -199,6 +201,7 @@ export default {
                 .then((res) => {
                     this.userObject = res.data
                     console.log(res.data)
+                    this.createPutObject()
                 })
                 .catch((e) => {
                     console.log(e);
@@ -216,6 +219,34 @@ export default {
                 .catch((e) => {
                     console.log(e);
                 });
+        },
+
+        //pointを与える処理
+        createPutObject(){
+            let obj ={
+             "email":this.userObject.email,
+             "password":this.userObject.password,
+             "username":this.userObject.username,
+             "status":this.userObject.status,
+             "user_group":this.userObject.user_group,
+              //所持ポイント増加
+              "eth_stock":this.userObject.eth_stock + 1
+            }
+            console.log('QuestionView.vue createPutObject() objの確認',obj)
+            return obj
+        },
+        //質問したユーザーに対して，ポイントを送る
+        putSendPoint(){
+          let update_obj = this.createPutObject()
+          console.log('Question.vue putSendPoint() obj', update_obj)
+          this.axios
+              .put(process.env.VUE_APP_API_URL + "/app/users/" + this.userId + "/", update_obj)
+              .then((res) => {
+                 console.log(res);
+              })
+              .catch((e) => {
+                 console.log(e);
+            });
         },
         log() {
             console.log(this.userId, this.etherId, this.question_id, this.credentials)

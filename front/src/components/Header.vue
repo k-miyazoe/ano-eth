@@ -15,11 +15,11 @@
           サインイン
         </router-link>
       </v-btn>
-      <v-icon>
-        <router-link :to="{ name: 'mypage', params: { id: uid } }">
+      <v-btn>
+        <router-link to='/mypage'>
           マイページ
         </router-link>
-      </v-icon>
+      </v-btn>
     </v-app-bar>
     <div style="padding: 15px;"></div>
   </div>
@@ -31,7 +31,7 @@ export default {
   components: {
   },
   data: () => ({
-    uid: "",
+    uid: 1,
   }),
   mounted() {
     this.setURLParameter();
@@ -40,7 +40,7 @@ export default {
     setURLParameter() {
       this.$session.start();
       if (this.$session.has("token")) {
-        console.log('set uid', this.$session.get('user_id'))
+        console.log('Header.vue set uid', this.$session.get('user_id'))
         this.uid = this.$session.get('user_id')
       }
     },
