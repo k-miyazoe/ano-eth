@@ -34,9 +34,7 @@ export default {
       unresolved_question: {},
       resolved_question: {},
       my_question: {},
-      logtest: [{ id: 1, title: 'title1', content: '2022-05-25', }, { id: 2, title: 'title2', content: '2022-05-24' }, { id: 3, title: 'title3', content: '2022-05-13' }],
-      items: [
-      ],
+      items: [],
     }
   },
   mounted() {

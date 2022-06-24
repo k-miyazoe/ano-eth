@@ -15,10 +15,37 @@
           サインイン
         </router-link>
       </v-btn>
+      <v-icon>
+        <router-link :to="{ name: 'mypage', params: { id: uid } }">
+          マイページ
+        </router-link>
+      </v-icon>
     </v-app-bar>
     <div style="padding: 15px;"></div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+export default {
+  components: {
+  },
+  data: () => ({
+    uid: "",
+  }),
+  mounted() {
+    this.setURLParameter();
+  },
+  methods: {
+    setURLParameter() {
+      this.$session.start();
+      if (this.$session.has("token")) {
+        console.log('set uid', this.$session.get('user_id'))
+        this.uid = this.$session.get('user_id')
+      }
+    },
+  },
+
+}
+
 </script>

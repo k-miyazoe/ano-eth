@@ -6,6 +6,7 @@ import SignIn from '../views/SignIn.vue'
 import Question from '../components/Question.vue'
 import QuestionView from '../components/QuestionView.vue'
 import CreateEther from '../views/CreateEther.vue'
+import MyPage from '../views/Mypage.vue'
 
 
 Vue.use(VueRouter)
@@ -38,6 +39,12 @@ const routes = [
   {
     path: '/create-ether',
     component: CreateEther,
+  },
+  {
+    path: '/mypage/:id',
+    component: MyPage,
+    props: true,
+    name: "mypage"
   }
 
 
