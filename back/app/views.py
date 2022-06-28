@@ -108,6 +108,7 @@ class EtherUpdate(generics.UpdateAPIView):
 class QuestionList(generics.ListAPIView):
     #投稿時間が新しい順に変更したい
     queryset = Question.objects.all()
+    #queryset = Question.objects.all().order_by('question_post_time')
     serializer_class = QuestionSerializer
     
     def get_queryset(self):

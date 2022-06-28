@@ -2,7 +2,6 @@
   <v-app>
     <Header />
     <v-main>
-      <NavHelpBar />
       <v-row class="justify-center">
         <v-btn @click="routerPushCreateQuestion">質問する</v-btn>
       </v-row>
@@ -10,7 +9,7 @@
         <v-card v-for="item in unresolved_question" :key="item.id">
           <v-card-text>
             <router-link :to="{ name: 'question-detail', params: { id: item.id } }">
-              {{ item.question_title }} {{ item.question_post_time }}
+              {{ item.question_title }}
             </router-link>
           </v-card-text>
         </v-card>
@@ -21,12 +20,11 @@
 
 <script>
 import Header from "../components/Header.vue";
-import NavHelpBar from "../components/NavigationHelpBar.vue"
 import axios from "axios";
 
 export default {
   components: {
-    Header, NavHelpBar,
+    Header, 
   },
   data() {
     return {
