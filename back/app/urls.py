@@ -16,13 +16,16 @@ urlpatterns = [
     #Ether
     path('ether-get/<int:user_id>/', EtherGet.as_view()),
     path('create-ether/', EtherCreate.as_view()),
-    path('ether/<pk>/', EtherRetrieveUpdate.as_view()),
+    #なぜurlパラメータにuser_idを採用したのかわからない
+    path('ether-update/<int:user_id>/', EtherUpdate.as_view()),
+    #path('ether/<int:user_id>/', EtherRetrieveUpdate.as_view()),
+    
     
     #Question
     path('get-question/<slug:flag>/', QuestionList.as_view()),
     path('get-question/<pk>', QuestionGet.as_view()),
     path('create-question/', QuestionCreate.as_view()),
-    # path('update-question/<pk>/', QuestionUpdate.as_view()),
+    path('update-question/<pk>/', QuestionUpdate.as_view()),
     # path('search-question/<slug:flag>', QuestionSearch.as_view()),
     
     #Answer

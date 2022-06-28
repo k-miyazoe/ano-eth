@@ -90,6 +90,7 @@ export default {
       userId: this.$session.get('user_id'),
       userObject: {},
       etherId: null,
+      ether_user_name: "",
     };
   },
   mounted() {
@@ -115,6 +116,8 @@ export default {
     postQuestion() {
       this.loading = true
       this.credentials["ether_id"] = this.etherId
+      //質問情報にuser_name情報を追加する
+      this.credentials["question_user_name"] = this.ether_user_name
       this.axios
         .post(process.env.VUE_APP_API_URL + "/app/create-question/", this.credentials)
         .then((res) => {
@@ -143,21 +146,18 @@ export default {
       this.dialog = false
     },
     //現在obj空です
-    createPutObject(){
-       let obj ={
-        "email":this.userObject.email,
-        "password":this.userObject.password,
-        "username":this.userObject.username,
-        "status":this.userObject.status,
-        "user_group":this.userObject.user_group,
+    createPutObject() {
+      let obj = {
+        "email": this.userObject.email,
+        "password": this.userObject.password,
         //所持ポイント増加
-        "eth_stock":this.userObject.eth_stock + 1
+        "eth_stock": this.userObject.eth_stock + 1
       }
-      console.log('Question.vue createPutObject() objの確認',obj)
+      console.log('Question.vue createPutObject() objの確認', obj)
       return obj
     },
     //質問したユーザーに対して，ポイントを送る
-    putSendPoint(){
+    putSendPoint() {
       let update_obj = this.createPutObject()
       console.log('Question.vue putSendPoint() obj', update_obj)
       this.axios
@@ -184,25 +184,28 @@ export default {
           console.log(e);
         });
     },
+    //ログイン中のユーザー情報を取得し、点数up用のオブジェクトを作成する
     getUserInfo() {
       axios
         .get(process.env.VUE_APP_API_URL + "/app/users/" + this.userId)
         .then((res) => {
           this.userObject = res.data
-          console.log("Question.vue getUserInfo() userObject",res.data)
+          console.log("Question.vue getUserInfo() userObject", res.data)
           this.createPutObject();
         })
         .catch((e) => {
           console.log(e);
         });
     },
+    //ether_idとuser_nameをetherモデルから取得する
     getEtherId() {
       this.axios
         .get(process.env.VUE_APP_API_URL + "/app/ether-get/" + this.userId)
         .then((res) => {
           let response = res.data[0]
           this.etherId = response["id"]
-          console.log("QUestion.vue getEtherId() etherId", response["id"]);
+          this.ether_user_name = response["user_name"]
+          console.log("Question.vue getEtherId() etherId:", response["id"], "user_name:", response["user_name"]);
         })
         .catch((e) => {
           console.log(e);

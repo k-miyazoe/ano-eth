@@ -79,10 +79,12 @@ def postCreateEther(request):
 
 ##############################################################################
 
-#Etherモデル確認
+#特定のuseridのEtherモデル取得
 class EtherGet(generics.ListAPIView):
+    queryset = Ether.objects.all()
     serializer_class = EtherSerializer
-    
+    #lookup_field使えない
+    #lookup_field = "user_id"
     def get_queryset(self):
         u_id = self.kwargs.get("user_id")
         return Ether.objects.filter(user_id=u_id)
@@ -95,7 +97,12 @@ class EtherCreate(generics.CreateAPIView):
 class EtherRetrieveUpdate(generics.RetrieveUpdateAPIView):
     queryset = Ether.objects.all()
     serializer_class = EtherSerializer
-    #permission_classes = (permissions.IsAuthenticated, )
+
+class EtherUpdate(generics.UpdateAPIView):
+    queryset = Ether.objects.all()
+    serializer_class = EtherSerializer
+    
+    lookup_field = 'user_id'
 
 #Question
 class QuestionList(generics.ListAPIView):

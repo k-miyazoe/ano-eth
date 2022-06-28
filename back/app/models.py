@@ -34,15 +34,15 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField("メールアドレス", max_length=255, unique=True)
-    username = models.CharField("名前", max_length=255)
-    status = models.BooleanField(help_text='学生ならfalse')
+    username = models.CharField("名前",default="",max_length=255)
+    status = models.BooleanField(help_text='学生ならfalse',default=False)
     #not null制約解除
     eth_stock = models.IntegerField(null=True)
     
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     #追加
-    user_group = models.CharField("グループ",max_length=10)
+    user_group = models.CharField("グループ",default="",max_length=10)
     
     objects = UserManager()
 
@@ -63,27 +63,29 @@ class Ether(models.Model):
     ether_address = models.CharField(default="address",max_length=100)
     ether_password = models.CharField(default="password",max_length=20)
     ether_wallet   = models.IntegerField(default=0)
-    ether_anonymous = models.BooleanField()
-    ether_account_name = models.CharField(max_length=30)
+    ether_anonymous = models.BooleanField(default=True)#二つ以上のetherアカウント運用を想定したもの．正垢がTrue
+    ether_account_name = models.CharField(default="",max_length=30)
 
 class Question(models.Model):
     ether_id = models.ForeignKey(Ether, on_delete=models.CASCADE)
-    question_title = models.CharField(max_length=50)
-    question_content = models.TextField()
+    question_title = models.CharField(default="タイトル",max_length=50)
+    question_content = models.TextField(default="内容")
     question_source_code = models.TextField(null=True)
     question_post_time = models.DateTimeField(auto_now_add=True)
     question_status = models.BooleanField(default=False)
     question_value = models.IntegerField(default=0)
     question_number_of_responses = models.IntegerField(default=0)
+    question_user_name = models.CharField(null=True,max_length=255)
 
 class Answer(models.Model):
     ether_id = models.ForeignKey(Ether, on_delete=models.CASCADE)
     question_id = models.ForeignKey(Question,on_delete=models.CASCADE)
-    answer_content = models.TextField()
+    answer_content = models.TextField(default="内容")
     answer_source_code = models.TextField(null=True)
     #作成日は自動で保存 フロント側でデータいらない
     answer_post_time = models.DateTimeField(auto_now_add=True)
     answer_value = models.IntegerField(default=0)
     answer_best = models.BooleanField(default=False)
+    answer_user_name = models.CharField(null=True,max_length=255)
    
     

@@ -8,23 +8,39 @@
                 <v-card class="mx-auto" max-height="344">
                     <v-col class="mb-10">
                         <v-card-title>{{ one_quesiton.question_title }}</v-card-title>
-                        <v-card-text>{{ one_quesiton.question_content }}</v-card-text>
-                        <v-card-text>{{ one_quesiton.question_source_code }}</v-card-text>
+
+                        <v-card>
+                            <v-card-text>内容</v-card-text>
+                            <v-card-text>{{ one_quesiton.question_content }}</v-card-text>
+                        </v-card>
+
+                        <v-card>
+                            <v-card-text>ソースコード</v-card-text>
+                            <v-card-text>{{ one_quesiton.question_source_code }}</v-card-text>
+                        </v-card>
+
                         <v-card-actions>
-                            <v-btn color="orange" text>
+                            <v-btn color="orange" text @click="highlyRatedQuestion">
                                 高評価
+                            </v-btn>
+                            <v-btn color="green" text @click="resolvedQuestion">
+                                解決
                             </v-btn>
                         </v-card-actions>
                     </v-col>
                 </v-card>
+
                 <!--回答一覧-->
                 <v-card v-for="item in any_answer" :key="item.id">
                     <v-card-title>回答 </v-card-title>
                     <v-card-text>{{ item.answer_content }}</v-card-text>
                     <v-card-text>{{ item.answer_source_code }}</v-card-text>
                     <v-card-actions>
-                        <v-btn color="orange" text>
+                        <v-btn color="orange" text @click="highlyRatedAnswer">
                             高評価
+                        </v-btn>
+                        <v-btn color="red" text @click="bestAnswer">
+                            ベストアンサー
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -79,6 +95,7 @@ import NavHelpBar from "../components/NavigationHelpBar.vue"
 import axios from "axios";
 import header from "/src/node/axios";
 import router from "../router";
+import Swal from "sweetalert2";
 
 export default {
     components: {
@@ -104,6 +121,8 @@ export default {
             },
             valid: true,
             loading: false,
+            question_ether_id: 0,
+            ether_user_name: "",
         };
     },
     mounted() {
@@ -127,12 +146,19 @@ export default {
                 router.push("/signin");
             }
         },
+        axiosHeader() {
+            this.axios = header.setHeader();
+        },
         getOneQuestion() {
             axios
                 .get(process.env.VUE_APP_API_URL + "/app/get-question/" + this.id)
                 .then((res) => {
                     this.one_quesiton = res.data
                     this.question_id = this.one_quesiton.id
+                    //ether_idの取得がうまくいかない
+                    console.log('one_question.ether_id:', this.one_quesiton.ether_id)
+                    this.question_ether_id = this.one_question.ether_id
+                    console.log(this.one_quesiton.ether_id)
                 })
                 .catch((e) => {
                     console.log(e);
@@ -149,6 +175,33 @@ export default {
                     console.log(e);
                 });
         },
+        getUserInfo() {
+            axios
+                .get(process.env.VUE_APP_API_URL + "/app/users/" + this.userId)
+                .then((res) => {
+                    this.userObject = res.data
+                    console.log(res.data)
+                    this.createPutObject()
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        },
+        //useridからetherid,usernameを取得する
+        getEtherId() {
+            console.log(process.env.VUE_APP_API_URL + "/app/ether-get/" + this.userId + "/")
+            axios
+                .get(process.env.VUE_APP_API_URL + "/app/ether-get/" + this.userId)
+                .then((res) => {
+                    let data = res.data[0]
+                    this.etherId = data["id"]
+                    this.ether_user_name = data["user_name"]
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        },
+
         postAnswer() {
             this.loading = true
             this.credentials["ether_id"] = this.etherId
@@ -177,9 +230,6 @@ export default {
                 });
             this.dialog = false
         },
-        axiosHeader() {
-            this.axios = header.setHeader();
-        },
         sendEther() {
             this.loading = true
             send_object = this.userObject
@@ -195,58 +245,184 @@ export default {
                     console.log(e);
                 });
         },
-        getUserInfo() {
-            axios
-                .get(process.env.VUE_APP_API_URL + "/app/users/" + this.userId)
-                .then((res) => {
-                    this.userObject = res.data
-                    console.log(res.data)
-                    this.createPutObject()
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
+
+        //pointを与える処理
+        //swith文でuser,ether,questionのオブジェクトをそれぞれ引数から作れるようにしたい
+        createPutObject() {
+            let obj = {
+                "email": this.userObject.email,
+                "password": this.userObject.password,
+                //所持ポイント増加
+                "eth_stock": this.userObject.eth_stock + 1
+            }
+            console.log('QuestionView.vue createPutObject() objの確認', obj)
+            return obj
         },
-        getEtherId() {
-            console.log(process.env.VUE_APP_API_URL + "/app/ether-get/" + this.userId + "/")
-            axios
-                .get(process.env.VUE_APP_API_URL + "/app/ether-get/" + this.userId)
+        //質問したユーザーに対して，ポイントを送る
+        putSendPoint() {
+            let update_obj = this.createPutObject()
+            console.log('Question.vue putSendPoint() obj', update_obj)
+            this.axios
+                .put(process.env.VUE_APP_API_URL + "/app/users/" + this.userId + "/", update_obj)
                 .then((res) => {
-                    let data = res.data[0]
-                    console.log("EtherId", data["id"]);
-                    this.etherId = data["id"]
+                    console.log(res);
                 })
                 .catch((e) => {
                     console.log(e);
                 });
         },
 
-        //pointを与える処理
-        createPutObject(){
-            let obj ={
-             "email":this.userObject.email,
-             "password":this.userObject.password,
-             "username":this.userObject.username,
-             "status":this.userObject.status,
-             "user_group":this.userObject.user_group,
-              //所持ポイント増加
-              "eth_stock":this.userObject.eth_stock + 1
+        //高評価　質問 　useridなどがまだ未定
+        highlyRatedQuestion() {
+            //etherとquestionのputを行う userはMypageの際に更新する
+
+            let ether_update_obj = {
+                user_id: null,
+                eth_wallet: null//this.eth_wallet + 1
             }
-            console.log('QuestionView.vue createPutObject() objの確認',obj)
-            return obj
+            //質問のether_id -> なぞにether_id取得できない問題にあたる
+            this.axios
+                .put(process.env.VUE_APP_API_URL + "/app/ether-update/" + this.userId + "/", ether_update_obj)
+                .then((res) => {
+                    console.log(res);
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+
+
+            //質問 update function 質問の評価値を1上げる
+            let question_update_obj = {
+                ether_id: this.one_quesiton.ether_id,
+                question_value: this.one_question.question_value + 1
+            }
+
+            this.axios
+                .put(process.env.VUE_APP_API_URL + "/app/update-question/" + this.question_id + "/", question_update_obj)
+                .then((res) => {
+                    console.log(res);
+                    console.log('質問の評価値up')
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+
         },
-        //質問したユーザーに対して，ポイントを送る
-        putSendPoint(){
-          let update_obj = this.createPutObject()
-          console.log('Question.vue putSendPoint() obj', update_obj)
-          this.axios
-              .put(process.env.VUE_APP_API_URL + "/app/users/" + this.userId + "/", update_obj)
-              .then((res) => {
-                 console.log(res);
-              })
-              .catch((e) => {
-                 console.log(e);
-            });
+        //質問解決 コード終了
+        resolvedQuestion() {
+            if (this.hasBestAnswer()) {
+                //質問解決処理 押し間違えても大丈夫か[現在こっち]または二段階質問にするか
+                let resolve_obj = {
+                    ether_id: this.one_quesiton.ether_id,
+                    //booleanを逆にする
+                    question_status: !this.one_quesiton.question_status
+                }
+                this.axios
+                    .put(process.env.VUE_APP_API_URL + "/app/update-question/" + this.question_id + "/", resolve_obj)
+                    .then((res) => {
+                        console.log(res);
+                        Swal.fire(
+                            '質問が解決されました!',
+                            'success',
+                        )
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
+
+                console.log('質問解決')
+            } else {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Error",
+                    text: "ベストアンサーがありません．ベストアンサーを選択してください",
+                    showConfirmButton: false,
+                    showCloseButton: false,
+                    timer: 3000,
+                });
+            }
+        },
+        //高評価  回答 objの中身が未定
+        highlyRatedAnswer() {
+            let ether_update_obj = {
+                user_id: null,
+                eth_wallet: null//this.eth_wallet + 1
+            }
+            this.axios
+                .put(process.env.VUE_APP_API_URL + "/app/ether-update/" + this.userId + "/", ether_update_obj)
+                .then((res) => {
+                    console.log(res);
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+
+
+            //回答の評価値を1上げる 回答した人のetheridが必要
+            let answer_update_obj = {
+                ether_id: null,
+                answer_value: 1
+            }
+
+            this.axios
+                //answer_idが必要
+                .put(process.env.VUE_APP_API_URL + "/app/update-answer/" + this.question_id + "/", answer_update_obj)
+                .then((res) => {
+                    console.log(res);
+                    console.log('質問の評価値up')
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+
+
+            console.log('高評価　質問')
+        },
+        //質問者が回答に対してベストアンサーを決める コードは終了
+        bestAnswer() {
+            //質問のイーサーidと現在のイーサidを比較 this.etherId
+            console.log('idの確認 etherid:', this.etherId, 'question_ether_id', this.question_ether_id)
+            //現在のユーザーと質問したユーザーを比較検証
+            if (this.etherId == this.question_ether_id) {
+                //回答に対するput
+                let answer_update_obj = {
+                    ether_id: null,
+                    answer_best: True //!this.any_answer[parameter].answer_best
+                }
+
+                this.axios
+                    .put(process.env.VUE_APP_API_URL + "/app/update-answer/" + this.question_id + "/", answer_update_obj)
+                    .then((res) => {
+                        console.log(res);
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
+                Swal.fire(
+                    'ベストアンサーを決定しました!',
+                    'success',
+                )
+
+            } else {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Error",
+                    text: "質問者のみベストアンサーを決めることができます",
+                    showConfirmButton: false,
+                    showCloseButton: false,
+                    timer: 3000,
+                });
+            }
+        },
+        //解決処理を行う前にベストアンサーが存在しているか コードは終了
+        hasBestAnswer() {
+            for (best in this.any_answer) {
+                if (best.answer_best == True) {
+                    return true
+                } else {
+                    return false
+                }
+            }
         },
         log() {
             console.log(this.userId, this.etherId, this.question_id, this.credentials)

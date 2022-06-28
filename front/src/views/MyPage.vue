@@ -4,18 +4,18 @@
         <v-main>
             <NavHelpBar />
             <v-container grid-list-md>
-             <v-card>
-             <v-card-title>MyPage</v-card-title>
-                <v-card-text>
-                    ユーザー名:  {{user_info.username}}
-                </v-card-text>
-                <v-card-text>
-                    所持通貨:  {{user_info.eth_stock}}
-                </v-card-text>
-                <v-card-text>
-                    メールアドレス:  {{user_info.email}}
-                </v-card-text>
-            </v-card>
+                <v-card>
+                    <v-card-title>MyPage</v-card-title>
+                    <v-card-text>
+                        ユーザー名: {{ user_info.username }}
+                    </v-card-text>
+                    <v-card-text>
+                        所持通貨: {{ user_info.eth_stock }}
+                    </v-card-text>
+                    <v-card-text>
+                        メールアドレス: {{ user_info.email }}
+                    </v-card-text>
+                </v-card>
             </v-container>
         </v-main>
     </v-app>
@@ -23,7 +23,6 @@
 
 <script>
 import axios from "axios";
-import Swal from "sweetalert2";
 import router from "../router";
 import Header from "../components/Header.vue";
 import NavHelpBar from "../components/NavigationHelpBar.vue"
@@ -48,7 +47,7 @@ export default {
             this.$session.start();
             if (this.$session.has("token")) {
                 this.uid = this.$session.get('user_id')
-                console.log('Mypage set uid',this.uid)
+                console.log('Mypage set uid', this.uid)
             } else {
                 router.push('/signin')
             }
@@ -56,11 +55,11 @@ export default {
         //user情報取得
         getUserInfo() {
             //'users/<pk>/'
-             axios
+            axios
                 .get(process.env.VUE_APP_API_URL + "/app/users/" + this.uid)
                 .then((res) => {
                     this.user_info = res.data
-                    console.log('MyPage.vue getUserInfo() user_info',this.user_info)
+                    console.log('MyPage.vue getUserInfo() user_info', this.user_info)
                 })
                 .catch((e) => {
                     console.log(e);

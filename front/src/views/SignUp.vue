@@ -101,7 +101,9 @@ export default {
     signUp() {
       if (this.$refs.form.validate()) {
         this.loading = true;
-        console.log(this.credentials)
+        //所持通貨の初期値を0に設定しておく
+        this.credentials.eth_stock = 0;
+        console.log("signupのobjの中身", this.credentials)
         //パスワードの確認
         if (this.checkPassword(this.credentials.password, this.check_password)) {
           this.axios
