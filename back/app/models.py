@@ -76,6 +76,9 @@ class Question(models.Model):
     question_value = models.IntegerField(default=0)
     question_number_of_responses = models.IntegerField(default=0)
     question_user_name = models.CharField(null=True,max_length=255)
+    
+    class Meta:
+        ordering = ['question_post_time']
 
 class Answer(models.Model):
     ether_id = models.ForeignKey(Ether, on_delete=models.CASCADE)
@@ -88,4 +91,13 @@ class Answer(models.Model):
     answer_best = models.BooleanField(default=False)
     answer_user_name = models.CharField(null=True,max_length=255)
    
-    
+#質問いいね
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='like_user')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+#回答いいね
+class AnswerLike(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)

@@ -33,4 +33,7 @@ urlpatterns = [
     path('create-answer/', AnswerCreate.as_view()),
     path('update-answer/<pk>/', AnswerUpdate.as_view()),
     
+    #Like
+    path('question-like/', views.Questionlike),
+    path('answer-like/', views.Answerlike),
 ]

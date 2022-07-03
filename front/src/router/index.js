@@ -8,6 +8,7 @@ import Question from '../components/Question.vue'
 import QuestionView from '../components/QuestionView.vue'
 import CreateEther from '../views/CreateEther.vue'
 //import MyPage from '../views/Mypage.vue'
+import NotFoundComponent from '../components/NotFoundComponent.vue'
 
 
 Vue.use(VueRouter)
@@ -47,6 +48,12 @@ const routes = [
     props: true,
     name: "mypage"
   },
+  {
+    path: '*',
+    component: NotFoundComponent,
+    name: 'notFound',
+  }
+
 ]
 
 const router = new VueRouter({

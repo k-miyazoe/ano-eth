@@ -6,16 +6,6 @@
       </v-toolbar-title>
       <v-spacer />
       <v-btn>
-        <router-link to='/signup'>
-          サインアップ
-        </router-link>
-      </v-btn>
-      <v-btn>
-        <router-link to='/signin'>
-          サインイン
-        </router-link>
-      </v-btn>
-      <v-btn>
         <router-link to='/mypage'>
           マイページ
         </router-link>
@@ -26,7 +16,6 @@
 </template>
 
 <script>
-import axios from "axios";
 export default {
   components: {
   },

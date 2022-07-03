@@ -6,11 +6,14 @@
         <v-btn @click="routerPushCreateQuestion">質問する</v-btn>
       </v-row>
       <v-container fluid>
-        <v-card v-for="item in unresolved_question" :key="item.id">
+        <v-card v-for="item in unresolved_question" :key="item.id" class="pa-md-4 mx-lg-auto" width="750px">
           <v-card-text>
             <router-link :to="{ name: 'question-detail', params: { id: item.id } }">
               {{ item.question_title }}
             </router-link>
+          </v-card-text>
+          <v-card-text>
+            回答数:{{ item.question_number_of_responses }}
           </v-card-text>
         </v-card>
       </v-container>
@@ -24,7 +27,7 @@ import axios from "axios";
 
 export default {
   components: {
-    Header, 
+    Header,
   },
   data() {
     return {
