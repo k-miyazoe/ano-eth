@@ -43,6 +43,9 @@
               <v-btn class="pink white--text" :disabled="!valid" @click="signIn">
                 サインイン
               </v-btn>
+              <v-btn class="pink white--text" :disabled="!valid" @click="signIn">
+        ユーザー登録してない方はこちらから
+        </v-btn>
             </v-form>
           </v-card-text>
         </v-card>

@@ -4,6 +4,8 @@ node_modules/
 db/
 *.env
 env_files/
+entrypoint-back.sh
+entrypoint-front.sh
 
 
 # local env files
