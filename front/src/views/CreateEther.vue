@@ -32,6 +32,9 @@ export default {
       userId: this.$session.get('user_id'),
       etherId: null,
       username: null,
+      user_group: null,
+      ether_user_name: null,
+      ether_obj: null,
     };
   },
   created() {
@@ -39,7 +42,7 @@ export default {
     this.axiosHeader();
   },
   mounted() {
-    this.createEtherUser();
+    this.getUserGroup()
   },
   methods: {
     checkToken() {
@@ -49,8 +52,6 @@ export default {
       if (this.$session.has("token")) {
         this.userId = this.$session.get('user_id')
         this.username = this.$session.get('user_name')
-        console.log('user_id:', this.$session.get('user_id'))
-        console.log('user_name:', this.username)
       }
       //所持していないなら
       else {
@@ -60,48 +61,49 @@ export default {
     axiosHeader() {
       this.axios = header.setHeader();
     },
+    //groupを取得する
     getUserGroup() {
-      console.log('Get user group start 4.1')
       axios
         .get(process.env.VUE_APP_API_URL + "/app/users/" + this.userId + "/")
         .then((res) => {
-          console.log("user_group:", res.data.user_group);
-          let user_group = res.data.user_group
-          return user_group
+          this.user_group = res.data.user_group
+          this.checkUserName()
+          this.initEtherObject()
+          this.createEtherUser()
         })
         .catch((e) => {
           console.log(e);
-          return false;
         });
     },
-    //usernameがない
-    initEtherObject() {
-      let name = "匿名"
-      let group = this.getUserGroup()
-      //Aなら実名、それ以外なら匿名
-      if (group == "A") {
-        name = this.user_name
+    //groupを判断し，usernameを返す
+    checkUserName(){
+      console.log("1 checkUserName start")
+      if(this.user_group == "A"){
+        this.ether_user_name = this.username
+      } else {
+        this.ether_user_name = "匿名"
       }
-
+    },
+    //モデルのobjデータ生成
+    initEtherObject() {
+      console.log('2 initEtherObject start')
       let ether_obj = {
         user_id: this.userId,
-        user_name: name,
+        //質問・回答の際表示される名前
+        user_name: this.ether_user_name,
         ether_wallet: 0,
         ether_anonymous: false,
         ether_account_name: this.username,//usernameを取得する
       }
-      console.log("init ether object done 4.2", ether_obj)
-      return ether_obj
+      console.log("init ether object ", ether_obj)
+      this.ether_obj = ether_obj
     },
     //Etherモデルを作成
     createEtherUser() {
-      console.log('createEtherUser start 2')
-      //let obj = this.initEtherObject()
-      console.log('post api start 3')
+      console.log('3 createEtherUser start')
       this.axios
-        .post(process.env.VUE_APP_API_URL + "/app/create-ether/", this.initEtherObject())
+        .post(process.env.VUE_APP_API_URL + "/app/create-ether/",this.ether_obj)
         .then((res) => {
-          console.log("create ether success", res);
           Swal.fire(
             'signin success!',
             'success',
