@@ -42,6 +42,26 @@
 
                 <!--回答一覧-->
                 <v-card v-for="(item, index) in any_answer" :key="index">
+                <!--ベストアンサーの回答-->
+                <div v-if="item.answer_best">
+                    <v-card-title>回答 {{ index + 1 }} ベストアンサー</v-card-title>
+                    <v-card-subtitle>回答者:{{ item.answer_user_name }}</v-card-subtitle>
+                    <v-card-text>{{ item.answer_content }}</v-card-text>
+                    <v-card-text>{{ item.answer_source_code }}</v-card-text>
+                    <v-card-actions>
+                        <!--いいねボタン-->
+                        <v-btn color="orange" text @click="highlyRatedAnswer(index)">
+                            <v-icon>mdi-thumb-up</v-icon>
+                            {{ item.answer_value }}
+                        </v-btn>
+                        <!--ベストアンサ解除ー-->
+                        <v-btn color="red" text>
+                            解除
+                        </v-btn>
+                    </v-card-actions>
+                </div>
+                     <!--ベストアンサーではない回答-->
+                <div v-else>
                     <v-card-title>回答 {{ index + 1 }}</v-card-title>
                     <v-card-subtitle>回答者:{{ item.answer_user_name }}</v-card-subtitle>
                     <v-card-text>{{ item.answer_content }}</v-card-text>
@@ -57,6 +77,7 @@
                             ベストアンサー
                         </v-btn>
                     </v-card-actions>
+                </div>
                 </v-card>
                 <!--回答フォーム-->
                 <v-card class="mt-10">
@@ -110,13 +131,11 @@ import axios from "axios";
 import header from "/src/node/axios";
 import router from "../router";
 import Swal from "sweetalert2";
-import VueStar from 'vue-star'
 
 export default {
     components: {
         Header,
         NavHelpBar,
-        VueStar,
     },
     data() {
         return {
@@ -140,6 +159,7 @@ export default {
             question_ether_id: 0,
             ether_user_name: "",
             best_answer_has: false,
+            ether_user_name: null,
         };
     },
     mounted() {
@@ -212,6 +232,7 @@ export default {
                 .then((res) => {
                     let data = res.data[0]
                     this.etherId = data["id"]
+                    console.log('getEtherId',data["user_name"])
                     this.ether_user_name = data["user_name"]
                 })
                 .catch((e) => {
@@ -226,6 +247,8 @@ export default {
             this.loading = true
             this.credentials["ether_id"] = this.etherId
             this.credentials["question_id"] = this.question_id
+            //回答者名が反映されてない aなら実名，それ以外なら匿名 判定するプログラムが必要
+            this.credentials["answer_user_name"] = this.ether_user_name
             this.axios
                 .post(process.env.VUE_APP_API_URL + "/app/create-answer/", this.credentials)
                 .then((res) => {
@@ -379,6 +402,7 @@ export default {
                 });
         },
         //質問者が回答に対してベストアンサーを決める[一旦ok]
+        //回答idを引数で受け取る
         bestAnswer(answer_list_index) {
             //if文の処理にながれない
             if (this.best_answer_has && this.any_answer[answer_list_index].answer_best) {
@@ -424,6 +448,13 @@ export default {
                     timer: 3000,
                 });
             }
+
+
+
+
+            //ベストアンサーがあるかどうか
+
+
         },
         //解決する前に，ベストアンサーがあるか判定[ok] 引数obj型
         hasBestAnswer(answer_list) {
@@ -442,6 +473,8 @@ export default {
             //do something
         },
         log() {
+            console.log("現在ログインしているユーザー名",this.ether_user_name)
+            console.log('ether id',this.etherId)
         }
     },
 }
