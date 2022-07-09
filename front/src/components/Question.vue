@@ -16,15 +16,15 @@
           <!-- 質門投稿フォーム -->
           <v-form v-else ref="form" v-model="valid" lazy-validation>
             <!--title-->
-            <v-textarea v-model="credentials.question_title" label="質問タイトル" :rules="rules.question_title" required
+            <v-textarea v-model="credentials.question_title" label="質問タイトル*" :rules="rules.question_title" required
               clearable clear-icon="mdi-close-circle" rows="1" outlined>
             </v-textarea>
             <!--content-->
-            <v-textarea v-model="credentials.question_content" label="質問内容" :rules="rules.question_content" required
+            <v-textarea v-model="credentials.question_content" label="質問内容*" :rules="rules.question_content" required
               clearable clear-icon="mdi-close-circle" auto-grow outlined>
             </v-textarea>
             <!--sorce code-->
-            <v-textarea v-model="credentials.question_source_code" label="ソースコード" clearable
+            <v-textarea v-model="credentials.question_source_code" label="ソースコード[任意]" clearable
               clear-icon="mdi-close-circle" auto-grow outlined>
             </v-textarea>
             <v-dialog v-model="dialog" width="500">

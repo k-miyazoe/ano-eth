@@ -8,76 +8,112 @@
                     log button
                 </v-btn>
                 <!--質問詳細-->
-                <v-card class="mx-auto" max-height="344">
-                    <v-col class="mb-10">
-                        <!--質問タイトル-->
-                        <v-card-title>質問 {{ one_quesiton.question_title }}
-                            <v-card-subtitle>質問者:{{ one_quesiton.question_user_name }}</v-card-subtitle>
-                        </v-card-title>
-                        <!--質問内容-->
-                        <v-card>
-                            <v-card-subtitle>内容</v-card-subtitle>
-                            <v-card-text>{{ one_quesiton.question_content }}</v-card-text>
-                        </v-card>
-                        <!--ソースコード-->
-                        <v-card>
-                            <v-card-subtitle>ソースコード</v-card-subtitle>
-                            <v-card-text>{{ one_quesiton.question_source_code }}</v-card-text>
-                        </v-card>
+                <!--解決済み-->
+                <div v-if="one_quesiton.question_status">
+                    <v-card class="mx-auto" max-height="344">
+                        <v-col class="mb-10">
+                            <!--質問タイトル-->
+                            <v-card-title>質問 {{ one_quesiton.question_title }} 解決済み!
+                                <v-card-subtitle>質問者:{{ one_quesiton.question_user_name }}</v-card-subtitle>
+                            </v-card-title>
+                            <!--質問内容-->
+                            <v-card>
+                                <v-card-subtitle>内容</v-card-subtitle>
+                                <v-card-text>{{ one_quesiton.question_content }}</v-card-text>
+                            </v-card>
+                            <!--ソースコード-->
+                            <v-card>
+                                <v-card-subtitle>ソースコード</v-card-subtitle>
+                                <v-card-text>{{ one_quesiton.question_source_code }}</v-card-text>
+                            </v-card>
 
-                        <v-card-actions>
-                            <!--高評価-->
-                            <v-btn color="orange" text @click="highlyRatedQuestion">
-                                <v-icon>mdi-thumb-up</v-icon>
-                                {{ one_quesiton.question_value }}
-                            </v-btn>
-                            <!--解決-->
-                            <v-btn color="green" text @click="resolvedQuestion">
-                                解決
-                            </v-btn>
-                        </v-card-actions>
-                    </v-col>
-                </v-card>
+                            <v-card-actions>
+                                <!--高評価-->
+                                <v-btn color="orange" text @click="highlyRatedQuestion">
+                                    <v-icon>mdi-thumb-up</v-icon>
+                                    {{ one_quesiton.question_value }}
+                                </v-btn>
+                                <!--解決を解除-->
+                                <v-btn color="green" text @click="releaseResolvedQuestion">
+                                    解決取り消し
+                                </v-btn>
+                            </v-card-actions>
+                        </v-col>
+                    </v-card>
+                </div>
+                <!--未解決-->
+                <div v-else>
+                    <v-card class="mx-auto" max-height="344">
+                        <v-col class="mb-10">
+                            <!--質問タイトル-->
+                            <v-card-title>質問 {{ one_quesiton.question_title }}
+                                <v-card-subtitle>質問者:{{ one_quesiton.question_user_name }}</v-card-subtitle>
+                            </v-card-title>
+                            <!--質問内容-->
+                            <v-card>
+                                <v-card-subtitle>内容</v-card-subtitle>
+                                <v-card-text>{{ one_quesiton.question_content }}</v-card-text>
+                            </v-card>
+                            <!--ソースコード-->
+                            <v-card>
+                                <v-card-subtitle>ソースコード</v-card-subtitle>
+                                <v-card-text>{{ one_quesiton.question_source_code }}</v-card-text>
+                            </v-card>
+
+                            <v-card-actions>
+                                <!--高評価-->
+                                <v-btn color="orange" text @click="highlyRatedQuestion">
+                                    <v-icon>mdi-thumb-up</v-icon>
+                                    {{ one_quesiton.question_value }}
+                                </v-btn>
+                                <!--解決-->
+                                <v-btn color="green" text @click="resolvedQuestion">
+                                    解決
+                                </v-btn>
+                            </v-card-actions>
+                        </v-col>
+                    </v-card>
+                </div>
                 <v-divider></v-divider>
 
                 <!--回答一覧-->
                 <v-card v-for="(item, index) in any_answer" :key="index">
-                <!--ベストアンサーの回答-->
-                <div v-if="item.answer_best">
-                    <v-card-title>回答 {{ index + 1 }} ベストアンサー</v-card-title>
-                    <v-card-subtitle>回答者:{{ item.answer_user_name }}</v-card-subtitle>
-                    <v-card-text>{{ item.answer_content }}</v-card-text>
-                    <v-card-text>{{ item.answer_source_code }}</v-card-text>
-                    <v-card-actions>
-                        <!--いいねボタン-->
-                        <v-btn color="orange" text @click="highlyRatedAnswer(index)">
-                            <v-icon>mdi-thumb-up</v-icon>
-                            {{ item.answer_value }}
-                        </v-btn>
-                        <!--ベストアンサ解除ー-->
-                        <v-btn color="red" text>
-                            解除
-                        </v-btn>
-                    </v-card-actions>
-                </div>
-                     <!--ベストアンサーではない回答-->
-                <div v-else>
-                    <v-card-title>回答 {{ index + 1 }}</v-card-title>
-                    <v-card-subtitle>回答者:{{ item.answer_user_name }}</v-card-subtitle>
-                    <v-card-text>{{ item.answer_content }}</v-card-text>
-                    <v-card-text>{{ item.answer_source_code }}</v-card-text>
-                    <v-card-actions>
-                        <!--いいねボタン-->
-                        <v-btn color="orange" text @click="highlyRatedAnswer(index)">
-                            <v-icon>mdi-thumb-up</v-icon>
-                            {{ item.answer_value }}
-                        </v-btn>
-                        <!--ベストアンサー-->
-                        <v-btn color="red" text @click="bestAnswer(index)">
-                            ベストアンサー
-                        </v-btn>
-                    </v-card-actions>
-                </div>
+                    <!--ベストアンサーの回答-->
+                    <div v-if="item.answer_best">
+                        <v-card-title>回答 {{ index + 1 }} ベストアンサー</v-card-title>
+                        <v-card-subtitle>回答者:{{ item.answer_user_name }}</v-card-subtitle>
+                        <v-card-text>{{ item.answer_content }}</v-card-text>
+                        <v-card-text>{{ item.answer_source_code }}</v-card-text>
+                        <v-card-actions>
+                            <!--いいねボタン-->
+                            <v-btn color="orange" text @click="highlyRatedAnswer(index)">
+                                <v-icon>mdi-thumb-up</v-icon>
+                                {{ item.answer_value }}
+                            </v-btn>
+                            <!--ベストアンサ解除ー-->
+                            <v-btn color="red" text @click="releaseBestAnswer(item)">
+                                解除
+                            </v-btn>
+                        </v-card-actions>
+                    </div>
+                    <!--ベストアンサーではない回答-->
+                    <div v-else>
+                        <v-card-title>回答 {{ index + 1 }}</v-card-title>
+                        <v-card-subtitle>回答者:{{ item.answer_user_name }}</v-card-subtitle>
+                        <v-card-text>{{ item.answer_content }}</v-card-text>
+                        <v-card-text>{{ item.answer_source_code }}</v-card-text>
+                        <v-card-actions>
+                            <!--いいねボタン-->
+                            <v-btn color="orange" text @click="highlyRatedAnswer(index)">
+                                <v-icon>mdi-thumb-up</v-icon>
+                                {{ item.answer_value }}
+                            </v-btn>
+                            <!--ベストアンサー-->
+                            <v-btn color="red" text @click="bestAnswer(item)">
+                                ベストアンサー
+                            </v-btn>
+                        </v-card-actions>
+                    </div>
                 </v-card>
                 <!--回答フォーム-->
                 <v-card class="mt-10">
@@ -85,7 +121,7 @@
                         回答フォーム
                     </v-card-title>
                     <v-form ref="form" v-model="valid" lazy-validation>
-                        <v-textarea v-model="credentials.answer_content" label="解決策・提案" :rules="rules.answer_content"
+                        <v-textarea v-model="credentials.answer_content" label="解決策・提案*" :rules="rules.answer_content"
                             clearable clear-icon="mdi-close-circle" auto-grow outlined>
                         </v-textarea>
                         <v-textarea v-model="credentials.answer_source_code" label="ソースコード" clearable
@@ -232,12 +268,24 @@ export default {
                 .then((res) => {
                     let data = res.data[0]
                     this.etherId = data["id"]
-                    console.log('getEtherId',data["user_name"])
+                    console.log('getEtherId', data["user_name"])
                     this.ether_user_name = data["user_name"]
                 })
                 .catch((e) => {
                     console.log(e);
                 });
+        },
+        //解決する前に，ベストアンサーがあるか判定[ok] 引数obj型
+        hasBestAnswer(answer_list) {
+            let best_answer_decision = false
+            for (let item of answer_list) {
+                if (item.answer_best == true) {
+                    console.log('ベストアンサーあり')
+                    best_answer_decision = true
+                    this.best_answer_has = true
+                }
+            }
+            return best_answer_decision
         },
 
         //イベント処理
@@ -274,21 +322,6 @@ export default {
                     });
                 });
             this.dialog = false
-        },
-        sendEther() {
-            this.loading = true
-            send_object = this.userObject
-            send_object.ether_stock = send_object.ether_stock + 1;
-            //console.log(ether_point)
-            this.axios.put(process.env.VUE_APP_API_URL + "/app/users/" + this.userId, send_object)
-                .then((res) => {
-                    //console.log(res);
-                    this.loading = false
-                })
-                .catch((e) => {
-                    this.loading = false;
-                    console.log(e);
-                });
         },
         //質問の回答数をカウントアップする
         numberOfResponses() {
@@ -349,34 +382,95 @@ export default {
                     console.log(e);
                 });
         },
-        //質問解決 コード終了
+        //質問解決
         resolvedQuestion() {
-            //ベストアンサーが既に決定している場合
-            if (this.best_answer_has) {
-                let resolve_obj = {
+            //質問者かどうか
+            if (this.etherId == this.one_quesiton.ether_id) {
+                //回答が存在する場合
+                //ここのifのじょうけんがうまくいってない
+                if (this.any_answer.length != 0) {
+                    //ベストアンサーが存在しているなら
+                    if (this.best_answer_has) {
+                        //解決処理
+                        let resolve_obj = {
+                            ether_id: this.one_quesiton.ether_id,
+                            question_status: true
+                        }
+                        this.axios
+                            .put(process.env.VUE_APP_API_URL + "/app/update-question/" + this.question_id + "/", resolve_obj)
+                            .then((res) => {
+                                console.log(res);
+                                Swal.fire(
+                                    '質問が解決されました!',
+                                    'success',
+                                )
+                                this.getOneQuestion()
+                            })
+                            .catch((e) => {
+                                console.log(e);
+                            });
+                    }
+                    //ベストアンサーが存在してない場合
+                    else {
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Error",
+                            text: "ベストアンサーが存在しません．ベストアンサーを選択してください!",
+                            showConfirmButton: false,
+                            showCloseButton: false,
+                            timer: 3000,
+                        });
+                    }
+                }
+                //回答がない場合
+                else {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Error",
+                        text: "回答が存在しません.自己解決した場合、自身で回答を作成してください",
+                        showConfirmButton: false,
+                        showCloseButton: false,
+                        timer: 3000,
+                    });
+                }
+            }
+            //質問者以外
+            else {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Error",
+                    text: "質問者のみ有効です！",
+                    showConfirmButton: false,
+                    showCloseButton: false,
+                    timer: 3000,
+                });
+            }
+        },
+        //質問解決解除
+        releaseResolvedQuestion() {
+            if (this.etherId == this.one_quesiton.ether_id) {
+                let release_resolve_obj = {
                     ether_id: this.one_quesiton.ether_id,
-                    question_status: !this.one_quesiton.question_status
+                    question_status: false
                 }
                 this.axios
-                    .put(process.env.VUE_APP_API_URL + "/app/update-question/" + this.question_id + "/", resolve_obj)
+                    .put(process.env.VUE_APP_API_URL + "/app/update-question/" + this.question_id + "/", release_resolve_obj)
                     .then((res) => {
-                        console.log(res);
                         Swal.fire(
-                            '質問が解決されました!',
+                            '解決を取り消しました!',
                             'success',
                         )
+                        this.getOneQuestion()
                     })
                     .catch((e) => {
                         console.log(e);
                     });
-
-                console.log('質問解決')
             }
             else {
                 Swal.fire({
                     icon: "warning",
                     title: "Error",
-                    text: "ベストアンサーがありません．ベストアンサーを選択してください",
+                    text: "質問者のみ有効です！",
                     showConfirmButton: false,
                     showCloseButton: false,
                     timer: 3000,
@@ -401,11 +495,10 @@ export default {
                     console.log(e);
                 });
         },
-        //質問者が回答に対してベストアンサーを決める[一旦ok]
-        //回答idを引数で受け取る
-        bestAnswer(answer_list_index) {
-            //if文の処理にながれない
-            if (this.best_answer_has && this.any_answer[answer_list_index].answer_best) {
+        //bestanswer処理 ok
+        bestAnswer(answer) {
+            //bestアンサーがすでに存在している場合
+            if (this.best_answer_has) {
                 Swal.fire({
                     icon: "warning",
                     title: "Error",
@@ -415,22 +508,65 @@ export default {
                     timer: 3000,
                 });
             }
-            //ベストアンサー決定
-            if (this.etherId == this.one_quesiton.ether_id) {
-                let answer_update_obj = {
-                    ether_id: this.any_answer[answer_list_index].ether_id,
-                    question_id: this.question_id,
-                    answer_best: true
+            //bestanswerがない場合
+            else {
+                //質問者のみベストアンサー決定可能
+                if (this.etherId == this.one_quesiton.ether_id) {
+                    let answer_update_obj = {
+                        ether_id: answer.ether_id,
+                        question_id: this.question_id,
+                        answer_best: true
+                    }
+                    this.axios
+                        .put(process.env.VUE_APP_API_URL + "/app/update-answer/" + answer.id + "/", answer_update_obj)
+                        .then((res) => {
+                            this.best_answer_has = true
+                            console.log(res);
+                            Swal.fire(
+                                'ベストアンサーを決定しました!',
+                                'success',
+                            )
+                            //ページの更新
+                            this.getAnyAnswer()
+                        })
+                        .catch((e) => {
+                            console.log(e);
+                        });
+
                 }
-                let answer_url = this.any_answer[answer_list_index].id
+                //質問者でないユーザーはできない
+                else {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Error",
+                        text: "質問者のみベストアンサーを決めることができます",
+                        showConfirmButton: false,
+                        showCloseButton: false,
+                        timer: 3000,
+                    });
+                }
+            }
+        },
+        //bestanswer解除処理
+        releaseBestAnswer(answer) {
+            if (this.etherId == this.one_quesiton.ether_id) {
+                let answer_release_obj = {
+                    ether_id: answer.ether_id,
+                    //ether_id: this.any_answer[answer_list_index].ether_id,
+                    question_id: this.question_id,
+                    answer_best: false
+                }
                 this.axios
-                    .put(process.env.VUE_APP_API_URL + "/app/update-answer/" + answer_url + "/", answer_update_obj)
+                    .put(process.env.VUE_APP_API_URL + "/app/update-answer/" + answer.id + "/", answer_release_obj)
                     .then((res) => {
+                        this.best_answer_has = false
                         console.log(res);
                         Swal.fire(
-                            'ベストアンサーを決定しました!',
+                            'ベストアンサーを解除しました!',
                             'success',
                         )
+                        //ページの更新
+                        this.getAnyAnswer()
                     })
                     .catch((e) => {
                         console.log(e);
@@ -442,39 +578,17 @@ export default {
                 Swal.fire({
                     icon: "warning",
                     title: "Error",
-                    text: "質問者のみベストアンサーを決めることができます",
+                    text: "質問者のみベストアンサーを解除できます",
                     showConfirmButton: false,
                     showCloseButton: false,
                     timer: 3000,
                 });
             }
-
-
-
-
-            //ベストアンサーがあるかどうか
-
-
-        },
-        //解決する前に，ベストアンサーがあるか判定[ok] 引数obj型
-        hasBestAnswer(answer_list) {
-            let best_answer_decision = false
-            for (let item of answer_list) {
-                if (item.answer_best == true) {
-                    console.log('ベストアンサーあり')
-                    best_answer_decision = true
-                    this.best_answer_has = true
-                }
-            }
-            return best_answer_decision
-        },
-        //いいねアニメーション[未実装]
-        handleClick() {
-            //do something
         },
         log() {
-            console.log("現在ログインしているユーザー名",this.ether_user_name)
-            console.log('ether id',this.etherId)
+
+            console.log('any_answer', this.any_answer.length)
+            //console.log('length')
         }
     },
 }
