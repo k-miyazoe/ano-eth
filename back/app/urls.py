@@ -13,13 +13,13 @@ urlpatterns = [
     
     #WEB3
     path('create-eth-address/', views.createEtherAddress),
+    
     #Ether
     path('ether-get/<int:user_id>/', EtherGet.as_view()),
     path('create-ether/', EtherCreate.as_view()),
     #なぜurlパラメータにuser_idを採用したのかわからない
     path('ether-update/<int:user_id>/', EtherUpdate.as_view()),
     #path('ether/<int:user_id>/', EtherRetrieveUpdate.as_view()),
-    
     
     #Question
     path('get-question/<slug:flag>/', QuestionList.as_view()),
@@ -36,4 +36,7 @@ urlpatterns = [
     #Like
     path('question-like/', views.Questionlike),
     path('answer-like/', views.Answerlike),
+    
+    #Email
+    path('send-email/',views.sendEmail)
 ]

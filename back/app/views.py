@@ -5,6 +5,7 @@ from web3 import Web3
 import environ,json
 from django.http import JsonResponse, HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
 
 
 env = environ.Env()
@@ -192,6 +193,22 @@ def Answerlike(request):
         }
         return JsonResponse(context)
 
+
+#メール機能
+@csrf_exempt
+def sendEmail(request):
+    json_dict = json.loads(request.body)
+    receipt_email = json_dict["receipt_email"]
+    
+    subject = "質問に回答がありました"#引数で質問タイトルをもらってもいい
+    message = "これはテストメールですｌ"#ここは引数で変更してもいい
+    from_email = "22726022@edu.cc.saga-u.ac.jp"
+    #送信先は引数で受け取る必要がある また複数に送信することを想定されているためlist型である
+    recipient_list = [
+        receipt_email
+    ]
+    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+    return  JsonResponse('email send')
 
 #イーサリアムアドレス作成処理[未完成]
 ############################################################################
