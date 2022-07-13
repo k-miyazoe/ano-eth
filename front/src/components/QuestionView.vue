@@ -585,8 +585,21 @@ export default {
                 });
             }
         },
+        //メール通知機能 obj作ってpostする
+        mailSend() {
+            let mail_obj = {
+                subject: answer.ether_id,
+                message: this.question_id,
+                receipt_email: null,
+            }
+            this.axios
+                .post(process.env.VUE_APP_API_URL + "/app/create-answer/", mail_obj)
+                .then((res) => {
+                })
+                .catch((e) => {
+                });
+        },
         log() {
-
             console.log('any_answer', this.any_answer.length)
             //console.log('length')
         }

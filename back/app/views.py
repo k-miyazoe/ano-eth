@@ -1,3 +1,5 @@
+from email import message
+from re import sub
 from rest_framework import generics, permissions
 from .models import User,Ether,Question,Answer,Like,AnswerLike
 from .serializers import UserSerializer,EtherSerializer,QuestionSerializer,AnswerSerializer
@@ -198,17 +200,19 @@ def Answerlike(request):
 @csrf_exempt
 def sendEmail(request):
     json_dict = json.loads(request.body)
+    subject = json_dict["subject"]
+    message = json_dict["message"]
     receipt_email = json_dict["receipt_email"]
     
-    subject = "質問に回答がありました"#引数で質問タイトルをもらってもいい
-    message = "これはテストメールですｌ"#ここは引数で変更してもいい
-    from_email = "22726022@edu.cc.saga-u.ac.jp"
+    _subject = subject
+    _message = message
+    _from_email = "22726022@edu.cc.saga-u.ac.jp"
     #送信先は引数で受け取る必要がある また複数に送信することを想定されているためlist型である
-    recipient_list = [
+    _recipient_list = [
         receipt_email
     ]
-    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-    return  JsonResponse('email send')
+    send_mail(_subject, _message, _from_email, _recipient_list, fail_silently=False)
+    return  JsonResponse('email send',safe=False)
 
 #イーサリアムアドレス作成処理[未完成]
 ############################################################################
