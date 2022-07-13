@@ -70,6 +70,17 @@ JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'back.jwt_utils.jwt_response_payload_handler',  # JWT_RESPONSE_PAYLOAD_HANDLERに自作のjwt_response_payload_handlerを指定する
 }
 
+# For e-mail
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = env('EMAIL_HOST')
+# EMAIL_PORT = env('EMAIL_PORT')
+# #メールにTLS暗号化を使うか指定
+# EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
+# EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
 CROS_ORIGIN_ALLOW_ALL = env.bool('CROS_ORIGIN_ALLOW_ALL')
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:8080',
